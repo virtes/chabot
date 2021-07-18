@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot", "Chabot\Chabot.csproj", "{CE7128F4-7AC7-465A-8708-14AF2753EB81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chabot", "Chabot\Chabot.csproj", "{CE7128F4-7AC7-465A-8708-14AF2753EB81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.UnitTests", "Chabot.UnitTests\Chabot.UnitTests.csproj", "{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chabot.UnitTests", "Chabot.UnitTests\Chabot.UnitTests.csproj", "{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Example", "Chabot.Example\Chabot.Example.csproj", "{1EF375AF-B67B-442D-8389-EEC198605F37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EF375AF-B67B-442D-8389-EEC198605F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EF375AF-B67B-442D-8389-EEC198605F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EF375AF-B67B-442D-8389-EEC198605F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EF375AF-B67B-442D-8389-EEC198605F37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
