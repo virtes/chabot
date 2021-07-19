@@ -8,21 +8,21 @@ namespace Chabot.Example.CommandResults
     public class ReplyToMessageCommandResult : ICommandResult
     {
         private readonly string _sourceMessage;
-        private readonly string _receiver;
+        private readonly string _userId;
         private readonly string _message;
 
-        public ReplyToMessageCommandResult(string sourceMessage, string receiver, string message)
+        public ReplyToMessageCommandResult(string sourceMessage, string userId, string message)
         {
             _sourceMessage = sourceMessage;
-            _receiver = receiver;
+            _userId = userId;
             _message = message;
         }
 
         public ValueTask ExecuteResultAsync(IServiceProvider serviceProvider)
         {
-            var messageService = serviceProvider.GetRequiredService<IMessageService>();
+            var messageService = serviceProvider.GetRequiredService<IInteractionWithUser>();
 
-            messageService.SendMessage(_receiver, _message, _sourceMessage);
+            messageService.SendMessage(_userId, _message, _sourceMessage);
 
             return ValueTask.CompletedTask;
         }

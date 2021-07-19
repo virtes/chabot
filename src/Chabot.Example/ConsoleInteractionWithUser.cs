@@ -2,7 +2,7 @@
 
 namespace Chabot.Example
 {
-    public class ConsoleMessageService : IMessageService
+    public class ConsoleInteractionWithUser : IInteractionWithUser
     {
         public Message GetNewMessage()
         {
@@ -15,7 +15,7 @@ namespace Chabot.Example
             return new Message(name, text);
         }
 
-        public void SendMessage(string receiver, string text, string replyToMessage)
+        public void SendMessage(string userId, string text, string replyToMessage)
         {
             if (string.IsNullOrEmpty(replyToMessage))
             {

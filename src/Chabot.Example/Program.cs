@@ -28,7 +28,7 @@ namespace Chabot.Example
         {
             var services = new ServiceCollection();
 
-            services.AddSingleton<IMessageService, ConsoleMessageService>();
+            services.AddSingleton<IInteractionWithUser, ConsoleInteractionWithUser>();
 
             services.AddSingleton<ExceptionHandlingMiddleware>();
             services.AddSingleton<LoggingMiddleware>();
@@ -50,21 +50,20 @@ namespace Chabot.Example
 
             await using var serviceProvider = services.BuildServiceProvider();
 
-            // Simple example of interaction with user
-            var messageService = serviceProvider.GetRequiredService<IMessageService>();
+            var interactionWithUser = serviceProvider.GetRequiredService<IInteractionWithUser>();
 
             // Entry point service for processing messages
             var messageProcessor = serviceProvider.GetRequiredService<IMessageProcessor<SimpleMessage>>();
 
             while (true)
             {
-                var newMessage = messageService.GetNewMessage();
+                var newMessage = interactionWithUser.GetNewMessage();
 
                 var message = new SimpleMessage
                 {
                     Id = Guid.NewGuid().ToString(),
                     RawText = newMessage.Text,
-                    SenderId = newMessage.Sender,
+                    SenderId = newMessage.SenderId,
                     Items = new Dictionary<string, string>()
                 };
                 await messageProcessor.ProcessAsync(message);

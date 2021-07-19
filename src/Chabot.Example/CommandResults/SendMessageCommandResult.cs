@@ -7,20 +7,20 @@ namespace Chabot.Example.CommandResults
 {
     public class SendMessageCommandResult : ICommandResult
     {
-        private readonly string _receiver;
+        private readonly string _userId;
         private readonly string _text;
 
-        public SendMessageCommandResult(string receiver, string text)
+        public SendMessageCommandResult(string userId, string text)
         {
-            _receiver = receiver;
+            _userId = userId;
             _text = text;
         }
 
         public ValueTask ExecuteResultAsync(IServiceProvider serviceProvider)
         {
-            var messageService = serviceProvider.GetRequiredService<IMessageService>();
+            var messageService = serviceProvider.GetRequiredService<IInteractionWithUser>();
 
-            messageService.SendMessage(_receiver, _text);
+            messageService.SendMessage(_userId, _text, null);
 
             return ValueTask.CompletedTask;
         }
