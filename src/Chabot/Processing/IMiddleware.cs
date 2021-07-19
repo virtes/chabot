@@ -6,6 +6,6 @@ namespace Chabot.Processing
 {
     public interface IMiddleware<TMessage> where TMessage : IMessage
     {
-        ValueTask ExecuteAsync(MessageContext<TMessage> context, ProcessingDelegate<TMessage> next);
+        ValueTask ExecuteAsync(IMessageContext<TMessage> context, ProcessingDelegate<TMessage> next);
     }
 }

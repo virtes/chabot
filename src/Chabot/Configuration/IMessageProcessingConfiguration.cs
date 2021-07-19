@@ -3,9 +3,9 @@ using Chabot.Processing.Implementation;
 
 namespace Chabot.Configuration
 {
-    public interface IMessageProcessingConfiguration<TMessage>
+    public interface IMessageProcessingConfiguration<in TMessage>
         where TMessage : IMessage
     {
-        ProcessingDelegate<TMessage> ProcessingEntryPoint { get; }
+        ProcessingDelegate<TMessage>? ProcessingEntryPoint { get; }
     }
 }

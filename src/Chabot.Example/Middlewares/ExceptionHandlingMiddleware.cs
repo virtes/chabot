@@ -7,7 +7,7 @@ namespace Chabot.Example.Middlewares
 {
     public class ExceptionHandlingMiddleware : IMiddleware<SimpleMessage>
     {
-        public async ValueTask ExecuteAsync(MessageContext<SimpleMessage> context, ProcessingDelegate<SimpleMessage> next)
+        public async ValueTask ExecuteAsync(IMessageContext<SimpleMessage> context, ProcessingDelegate<SimpleMessage> next)
         {
             try
             {

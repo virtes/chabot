@@ -4,9 +4,9 @@ using Chabot.Processing;
 
 namespace Chabot.Authentication
 {
-    public interface IAuthenticationHandler<TMessage>
+    public interface IAuthenticationHandler<in TMessage>
         where TMessage : IMessage
     {
-        public ValueTask<AuthenticationResult> AuthenticateAsync(MessageContext<TMessage> context);
+        public ValueTask<AuthenticationResult> AuthenticateAsync(IMessageContext<TMessage> context);
     }
 }

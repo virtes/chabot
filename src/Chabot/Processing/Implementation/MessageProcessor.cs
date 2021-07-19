@@ -1,31 +1,31 @@
 ﻿using System.Threading.Tasks;
 using Chabot.Configuration;
 using Chabot.Messages;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Chabot.Processing.Implementation
 {
-    public class MessageProcessor<T> : IMessageProcessor<T> where T : IMessage
+    public class MessageProcessor<TMessage> : IMessageProcessor<TMessage> where TMessage : IMessage
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly IMessageProcessingConfiguration<T> _configuration;
+        private readonly IMessageContextFactory<TMessage> _messageContextFactory;
+        private readonly IMessageProcessingConfiguration<TMessage> _configuration;
 
-        public MessageProcessor(IServiceScopeFactory serviceScopeFactory,
-            IMessageProcessingConfiguration<T> configuration)
+        public MessageProcessor(IMessageContextFactory<TMessage> messageContextFactory,
+            IMessageProcessingConfiguration<TMessage> configuration)
         {
-            _serviceScopeFactory = serviceScopeFactory;
+            _messageContextFactory = messageContextFactory;
             _configuration = configuration;
         }
 
-        public async ValueTask ProcessAsync(T message)
+        public async ValueTask ProcessAsync(TMessage message)
         {
-            using var serviceScope = _serviceScopeFactory.CreateScope();
+            using var messageContext = _messageContextFactory.CreateContext(message);
 
-            var messageContext = new MessageContext<T>(message, serviceScope.ServiceProvider);
-
-            var processTask = _configuration.ProcessingEntryPoint(messageContext);
-            if (!processTask.IsCompletedSuccessfully)
-                await processTask;
+            if (_configuration.ProcessingEntryPoint != null)
+            {
+                var processTask = _configuration.ProcessingEntryPoint(messageContext);
+                if (!processTask.IsCompletedSuccessfully)
+                    await processTask;
+            }
         }
     }
 }
