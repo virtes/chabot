@@ -22,6 +22,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore      
     - name: Build
-      run: dotnet build --no-restore      
+      run: dotnet build --no-restore --configuration Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --configuration Release
+    - name: Codecov
+      uses: codecov/codecov-action@v2.0.1
