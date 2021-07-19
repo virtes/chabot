@@ -33,11 +33,10 @@ namespace Chabot.UnitTests.Processing
 
             _processingConfigurationMock
                 .Setup(c => c.ProcessingEntryPoint)
-                .Returns(context =>
+                .Returns(async context =>
                 {
                     context.Should().Be(messageContext);
-
-                    return ValueTask.CompletedTask;
+                    await Task.Yield();
                 });
 
             var processor = CreateProcessor();
