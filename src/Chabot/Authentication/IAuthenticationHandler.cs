@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Chabot.Messages;
+using Chabot.Processing;
 
 namespace Chabot.Authentication
 {

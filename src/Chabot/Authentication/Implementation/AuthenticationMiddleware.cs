@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Chabot.Messages;
 using Chabot.Processing;
 using Chabot.Processing.Implementation;
 

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Chabot.Messages;
 
 namespace Chabot.Processing
 {

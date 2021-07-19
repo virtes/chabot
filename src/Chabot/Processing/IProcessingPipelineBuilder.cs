@@ -1,4 +1,5 @@
 ﻿using System;
+using Chabot.Messages;
 using Chabot.Processing.Implementation;
 
 namespace Chabot.Processing

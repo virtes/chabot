@@ -1,18 +1,17 @@
 ﻿using Chabot.Authentication.Implementation;
 using Chabot.Authorization.Implementation;
-using Chabot.Commands.Implementation;
-using Chabot.Routing.Implementation;
+using Chabot.Messages;
 
 // ReSharper disable once CheckNamespace
 namespace Chabot.Processing
 {
     public static class ProcessingPipelineBuilderExtensions
     {
-        public static void RouteMessage<TMessage>(this IProcessingPipelineBuilder<TMessage> builder)
-            where TMessage : IMessage
-        {
-            builder.UseMiddleware<RouteMessageMiddleware<TMessage>>();
-        }
+        //public static void RouteMessage<TMessage>(this IProcessingPipelineBuilder<TMessage> builder)
+        //    where TMessage : IMessage
+        //{
+        //    builder.UseMiddleware<RouteMessageMiddleware<TMessage>>();
+        //}
 
         public static void Authenticate<TMessage>(this IProcessingPipelineBuilder<TMessage> builder)
             where TMessage : IMessage
@@ -26,10 +25,10 @@ namespace Chabot.Processing
             builder.UseMiddleware<AuthorizationMiddleware<TMessage>>();
         }
 
-        public static void ExecuteCommand<TMessage>(this IProcessingPipelineBuilder<TMessage> builder)
-            where TMessage : IMessage
-        {
-            builder.UseMiddleware<CommandExecutionMiddleware<TMessage>>();
-        }
+        //public static void ExecuteCommand<TMessage>(this IProcessingPipelineBuilder<TMessage> builder)
+        //    where TMessage : IMessage
+        //{
+        //    builder.UseMiddleware<CommandExecutionMiddleware<TMessage>>();
+        //}
     }
 }

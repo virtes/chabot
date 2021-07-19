@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Chabot.Configuration;
+using Chabot.Messages;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Chabot.Processing.Implementation
