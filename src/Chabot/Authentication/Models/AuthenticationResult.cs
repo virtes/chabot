@@ -6,7 +6,7 @@ namespace Chabot.Authentication
 {
     public readonly struct AuthenticationResult
     {
-        private AuthenticationResult(bool succeeded, string? stateKey, List<Claim> claims)
+        public AuthenticationResult(bool succeeded, string? stateKey, List<Claim> claims)
         {
             Succeeded = succeeded;
             StateKey = stateKey;
