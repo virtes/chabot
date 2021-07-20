@@ -34,6 +34,7 @@ namespace Chabot.Configuration.Implementation
             where TMessage : IMessage
         {
             Services.AddSingleton<IMessageProcessor<TMessage>, MessageProcessor<TMessage>>();
+            Services.AddSingleton<IMessageContextFactory<TMessage>, MessageContextFactory<TMessage>>();
         }
     }
 }

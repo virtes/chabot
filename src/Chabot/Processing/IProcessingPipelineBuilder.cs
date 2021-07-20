@@ -6,6 +6,8 @@ namespace Chabot.Processing
 {
     public interface IProcessingPipelineBuilder<TMessage> where TMessage : IMessage
     {
+        bool ThrowWhenPipelineReachedTheEnd { get; set; }
+
         IProcessingPipelineBuilder<TMessage> Use(Func<ProcessingDelegate<TMessage>, ProcessingDelegate<TMessage>> middleware);
 
         IProcessingPipelineBuilder<TMessage> UseMiddleware<T>()

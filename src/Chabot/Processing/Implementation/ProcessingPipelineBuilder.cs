@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Chabot.Messages;
 using Chabot.Processing.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,8 @@ namespace Chabot.Processing.Implementation
         {
             _middlewares = new List<Func<ProcessingDelegate<TMessage>, ProcessingDelegate<TMessage>>>();
         }
+
+        public bool ThrowWhenPipelineReachedTheEnd { get; set; } = true;
 
         public IProcessingPipelineBuilder<TMessage> Use(Func<ProcessingDelegate<TMessage>, ProcessingDelegate<TMessage>> middleware)
         {
@@ -32,15 +35,25 @@ namespace Chabot.Processing.Implementation
                 {
                     var middleware = context.Services.GetRequiredService<T>();
 
-                    await middleware.ExecuteAsync(context, next);
+                    var executeTask = middleware.ExecuteAsync(context, next);
+                    if (!executeTask.IsCompletedSuccessfully)
+                        await executeTask;
                 };
             });
         }
 
         public ProcessingDelegate<TMessage> BuildProcessingEntryPoint()
         {
-            ProcessingDelegate<TMessage> entryPoint = context
-                => throw new MessageProcessorReachedTheEndException(typeof(TMessage));
+            ProcessingDelegate<TMessage> entryPoint;
+
+            if (ThrowWhenPipelineReachedTheEnd)
+            {
+                entryPoint = _ => throw new MessageProcessorReachedTheEndException(typeof(TMessage));
+            }
+            else
+            {
+                entryPoint = _ => ValueTask.CompletedTask;
+            }
 
             foreach (var middleware in _middlewares.AsEnumerable().Reverse())
             {
