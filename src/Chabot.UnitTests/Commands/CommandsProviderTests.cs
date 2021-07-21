@@ -78,8 +78,8 @@ namespace Chabot.UnitTests.Commands
             var commands = provider.GetCommandsByMessageType(typeof(Message));
 
             commands.Count.Should().Be(2);
-            commands.Should().Contain(ci => ci.MethodInfo == typeof(SyncCommandGroup).GetMethod(nameof(AsyncCommandGroup.ValidCommand)));
-            commands.Should().Contain(ci => ci.MethodInfo == typeof(SyncCommandGroup).GetMethod(nameof(AsyncCommandGroup.ValidCommand_2)));
+            commands.Should().Contain(ci => ci.MethodInfo == typeof(AsyncCommandGroup).GetMethod(nameof(AsyncCommandGroup.ValidCommand)));
+            commands.Should().Contain(ci => ci.MethodInfo == typeof(AsyncCommandGroup).GetMethod(nameof(AsyncCommandGroup.ValidCommand_2)));
         }
 
         private CommandsProvider CreateProvider(Type commandGroupType)
