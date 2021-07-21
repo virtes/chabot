@@ -12,6 +12,8 @@ namespace Chabot.Configuration.Extensions
             var chabotBuilder = new ChabotBuilder(services);
 
             configureChabot(chabotBuilder);
+
+            chabotBuilder.Build();
         }
     }
 }

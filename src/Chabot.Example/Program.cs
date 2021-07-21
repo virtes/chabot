@@ -38,6 +38,8 @@ namespace Chabot.Example
                 // Configure chabot to process messages of type 'SimpleMessage'
                 c.ProcessMessage<SimpleMessage>(m =>
                 {
+                    m.ScanCommandsFrom(typeof(Program).Assembly);
+
                     // Configure message processing pipeline
                     m.ConfigurePipeline(pipeline =>
                     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Chabot.Messages;
 using Chabot.Processing;
 using Chabot.Processing.Implementation;
@@ -9,10 +10,13 @@ namespace Chabot.Configuration.Implementation
     public class MessageProcessingBuilder<TMessage> : IMessageProcessingBuilder<TMessage>
         where TMessage : IMessage
     {
+        private readonly IChabotBuilder _chabotBuilder;
         private readonly IProcessingPipelineBuilder<TMessage> _processingPipelineBuilder;
 
-        public MessageProcessingBuilder(IServiceCollection services)
+        public MessageProcessingBuilder(IServiceCollection services,
+            IChabotBuilder chabotBuilder)
         {
+            _chabotBuilder = chabotBuilder;
             Services = services;
 
             _processingPipelineBuilder = new ProcessingPipelineBuilder<TMessage>();
@@ -35,6 +39,11 @@ namespace Chabot.Configuration.Implementation
             var configuration = new MessageProcessingConfiguration<TMessage>(processingEntryPoint);
 
             Services.AddSingleton<IMessageProcessingConfiguration<TMessage>>(configuration);
+        }
+
+        public void ScanCommandsFrom(Assembly assembly)
+        {
+            _chabotBuilder.ScanCommandsFrom(assembly, typeof(TMessage));
         }
     }
 }
