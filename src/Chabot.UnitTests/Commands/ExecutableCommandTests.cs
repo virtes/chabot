@@ -22,7 +22,7 @@ namespace Chabot.UnitTests.Commands
 
             var executableCommand = new ExecutableCommand<Message>(commandInfo, async c =>
             {
-                await Task.Delay(0);
+                await Task.Delay(1);
 
                 c.Should().BeSameAs(contextMock.Object);
 
