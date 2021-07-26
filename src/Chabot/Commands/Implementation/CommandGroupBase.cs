@@ -1,7 +1,8 @@
 ﻿using Chabot.Messages;
 using Chabot.Processing;
 
-namespace Chabot.Commands.Implementation
+// ReSharper disable once CheckNamespace
+namespace Chabot.Commands
 {
     public abstract class CommandGroupBase<TMessage>
         where TMessage : IMessage

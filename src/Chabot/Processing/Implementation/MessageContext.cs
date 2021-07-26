@@ -1,4 +1,5 @@
 ﻿using System;
+using Chabot.Commands;
 using Chabot.Messages;
 using Chabot.User;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,8 @@ namespace Chabot.Processing.Implementation
         public IServiceProvider Services => _serviceScope.ServiceProvider;
 
         public UserIdentity User { get; set; }
+
+        public CommandInfo? Command { get; set; }
 
         public void Dispose()
         {

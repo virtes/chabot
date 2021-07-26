@@ -1,7 +1,6 @@
 ﻿using System;
 using Chabot.Processing.Implementation;
 using Chabot.UnitTests.Fakes;
-using Chabot.User;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Chabot.Commands.Implementation;
+using Chabot.Commands;
 using Chabot.Messages;
 using Chabot.Processing;
 using Chabot.Processing.Implementation;

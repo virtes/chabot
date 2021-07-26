@@ -7,6 +7,7 @@ using Chabot.Processing.Exceptions;
 using Chabot.Processing.Implementation;
 using Chabot.UnitTests.Fakes;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 
@@ -14,6 +15,14 @@ namespace Chabot.UnitTests.Processing
 {
     public class ProcessingPipelineBuilderTests
     {
+        private Mock<IServiceCollection> _serviceCollectionMock;
+
+        [SetUp]
+        public void Setup()
+        {
+            _serviceCollectionMock = new Mock<IServiceCollection>();
+        }
+
         [Test]
         public async Task ShouldBuildEntryPointWhichExecutesDelegatesInOrder()
         {
@@ -167,8 +176,16 @@ namespace Chabot.UnitTests.Processing
             await entryPoint(null!);
         }
 
+        [Test]
+        public void ShouldProvideServiceCollection()
+        {
+            var builder = CreateBuilder();
+
+            builder.Services.Should().BeSameAs(_serviceCollectionMock.Object);
+        }
+
         private ProcessingPipelineBuilder<Message> CreateBuilder()
-            => new ProcessingPipelineBuilder<Message>();
+            => new ProcessingPipelineBuilder<Message>(_serviceCollectionMock.Object);
 
         private class ExecutionOrderChecker
         {

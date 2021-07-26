@@ -19,7 +19,7 @@ namespace Chabot.Configuration.Implementation
             _chabotBuilder = chabotBuilder;
             Services = services;
 
-            _processingPipelineBuilder = new ProcessingPipelineBuilder<TMessage>();
+            _processingPipelineBuilder = new ProcessingPipelineBuilder<TMessage>(services);
         }
 
         public IServiceCollection Services { get; }

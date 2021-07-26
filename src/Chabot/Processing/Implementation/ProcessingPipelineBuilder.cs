@@ -12,10 +12,14 @@ namespace Chabot.Processing.Implementation
     {
         private readonly List<Func<ProcessingDelegate<TMessage>, ProcessingDelegate<TMessage>>> _middlewares;
 
-        public ProcessingPipelineBuilder()
+        public ProcessingPipelineBuilder(IServiceCollection services)
         {
             _middlewares = new List<Func<ProcessingDelegate<TMessage>, ProcessingDelegate<TMessage>>>();
+
+            Services = services;
         }
+
+        public IServiceCollection Services { get; }
 
         public bool ThrowWhenPipelineReachedTheEnd { get; set; } = true;
 

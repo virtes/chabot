@@ -1,4 +1,5 @@
 ﻿using System;
+using Chabot.Commands;
 using Chabot.Messages;
 using Chabot.User;
 
@@ -12,5 +13,7 @@ namespace Chabot.Processing
         IServiceProvider Services { get; }
 
         UserIdentity User { get; set; }
+
+        CommandInfo? Command { get; set; }
     }
 }
