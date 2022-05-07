@@ -7,7 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chabot", "Chabot\Chabot.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chabot.UnitTests", "Chabot.UnitTests\Chabot.UnitTests.csproj", "{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Example", "Chabot.Example\Chabot.Example.csproj", "{1EF375AF-B67B-442D-8389-EEC198605F37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.InMemoryState", "Chabot.InMemoryState\Chabot.InMemoryState.csproj", "{544135EA-36B2-467C-9ADA-2CBD867F29EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.KafkaProxy", "Chabot.KafkaProxy\Chabot.KafkaProxy.csproj", "{4F14A832-8FB6-4CF6-9032-32777E8F7395}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Telegram", "Chabot.Telegram\Chabot.Telegram.csproj", "{DC15C8F0-0F20-4540-9C7B-25346D208F48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +27,18 @@ Global
 		{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{122E38C8-AC7A-43EB-B623-CC1BAE9AE9ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1EF375AF-B67B-442D-8389-EEC198605F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EF375AF-B67B-442D-8389-EEC198605F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EF375AF-B67B-442D-8389-EEC198605F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EF375AF-B67B-442D-8389-EEC198605F37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544135EA-36B2-467C-9ADA-2CBD867F29EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544135EA-36B2-467C-9ADA-2CBD867F29EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544135EA-36B2-467C-9ADA-2CBD867F29EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544135EA-36B2-467C-9ADA-2CBD867F29EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
