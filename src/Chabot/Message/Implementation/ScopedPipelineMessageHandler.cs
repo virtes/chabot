@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Chabot.Telemetry;
 using Chabot.User;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,7 +26,8 @@ public class ScopedPipelineMessageHandler<TMessage, TUser, TUserId>
     
     public async Task HandleMessage(TMessage message, TUser user)
     {
-        using var activity = ChabotActivitySource.StartActivity();
+        using var activity = new Activity("Handle message");
+        activity.Start();
 
         try
         {
