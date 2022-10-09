@@ -1,13 +1,7 @@
 using System.ComponentModel;
-using System.Reflection;
-using Chabot.Command;
-using Chabot.Command.Configuration;
-using Chabot.Command.Implementation;
 using Chabot.Configuration.Exceptions;
 using Chabot.Message;
 using Chabot.Message.Implementation;
-using Chabot.State;
-using Chabot.State.Implementation;
 using Chabot.User;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,12 +21,13 @@ public class ChabotBuilder
     // ReSharper disable once MemberCanBeProtected.Global
     public List<Action<IServiceCollection>> ServicesValidators { get; } = new();
 
-    internal void ValidateServiceRegistration<TServiceType>()
+    public void ValidateServiceRegistration<TServiceType>(string serviceDescription)
     {
         ServicesValidators.Add(services =>
         {
             if (services.All(sd => sd.ServiceType != typeof(TServiceType)))
-                throw new InvalidChabotConfigurationException($"{nameof(TServiceType)} must be registered");
+                throw new InvalidChabotConfigurationException(
+                    $"{serviceDescription} ({typeof(TServiceType).FullName}) must be registered");
         });
     }
 }
@@ -130,48 +125,5 @@ public class ChabotBuilder<TMessage, TUser, TUserId> : ChabotBuilder
         }
 
         return entrypoint;
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public void AddState<TSerializedState>()
-    {
-        Services.TryAddScoped<IStateReader<TUserId>, StateReader<TUserId, TSerializedState>>();
-        Services.TryAddScoped<IStateWriter<TUserId>, StateWriter<TUserId, TSerializedState>>();
-        Services.TryAddSingleton<IStateTypeMapping, StateTypeMapping>();
-
-        ValidateServiceRegistration<IStateSerializer<TSerializedState>>();
-        ValidateServiceRegistration<IStateStorage<TUserId, TSerializedState>>();
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public void AddCommands(params Assembly[] assembliesToScan)
-    {
-        Services.AddOptions<CommandsOptions>();
-
-        foreach (var assembly in assembliesToScan)
-        {
-            Services.Configure<CommandsOptions>(o => o.AssembliesToScan.Add(assembly));
-            RegisterCommandGroups(assembly);
-        }
-
-        Services.TryAddSingleton<IMessageActionProvider<TMessage, TUser, TUserId>,
-            MessageActionProvider<TMessage, TUser, TUserId> >();
-        Services.TryAddSingleton<ICommandMessageActionBuilder, CommandMessageActionBuilder>();
-        Services.TryAddSingleton<ICommandDescriptorSelector, CommandDescriptorSelector>();
-        Services.TryAddSingleton<ICommandDescriptorsProvider, CommandDescriptorsProvider>();
-    }
-
-    private void RegisterCommandGroups(Assembly assembly)
-    {
-        var commandGroupBaseType = typeof(CommandGroupBase<TMessage, TUser, TUserId>);
-        var commandGroupTypes = assembly.GetTypes()
-            .Where(t => !t.IsAbstract
-                        && t.IsClass
-                        && t.IsAssignableTo(commandGroupBaseType));
-
-        foreach (var commandGroupType in commandGroupTypes)
-        {
-            Services.TryAddScoped(commandGroupType);
-        }
     }
 }

@@ -14,7 +14,7 @@ public abstract class CommandGroupBase<TMessage, TUser, TUserId>
     // ReSharper disable once MemberCanBeProtected.Global
     public MessageContext<TMessage, TUser, TUserId> Context { get; set; } = default!;
 
-    protected async Task SetState(IState? state)
+    protected async Task SetState(IState state)
     {   
         var stateWriter = Context.Services.GetRequiredService<IStateWriter<TUserId>>();
         Context.UserState = await stateWriter.WriteState(state, Context.User.Id);

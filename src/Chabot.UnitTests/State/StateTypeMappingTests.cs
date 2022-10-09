@@ -10,16 +10,16 @@ namespace Chabot.UnitTests.State;
 
 public class StateTypeMappingTests
 {
-    private StateTypeMappingOptions _options = default!;
+    private StateOptions _options = default!;
 
     private StateTypeMapping _subject = default!;
     
     [SetUp]
     public void Setup()
     {
-        _options = new StateTypeMappingOptions();
+        _options = new StateOptions();
 
-        var optionsMock = new Mock<IOptions<StateTypeMappingOptions>>();
+        var optionsMock = new Mock<IOptions<StateOptions>>();
         optionsMock
             .Setup(o => o.Value)
             .Returns(_options);
@@ -38,7 +38,7 @@ public class StateTypeMappingTests
     [Test]
     public void ShouldProvideStateTypeFromAssemblyByKey()
     {
-        _options.AssembliesToScan.Add(typeof(StateTypeMappingTests).Assembly);
+        _options.AssembliesToScanStateTypes.Add(typeof(StateTypeMappingTests).Assembly);
 
         var actualType = _subject.GetStateType("Chabot.UnitTests.State.StateTypeMappingTests+SomeTestState");
 

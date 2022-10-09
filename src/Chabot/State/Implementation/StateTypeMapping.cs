@@ -7,11 +7,11 @@ namespace Chabot.State.Implementation;
 
 public class StateTypeMapping : IStateTypeMapping
 {
-    private readonly StateTypeMappingOptions _options;
+    private readonly StateOptions _options;
     private readonly ConcurrentDictionary<string, Type> _typesByName = new ();
 
     public StateTypeMapping(
-        IOptions<StateTypeMappingOptions> optionsAccessor)
+        IOptions<StateOptions> optionsAccessor)
     {
         _options = optionsAccessor.Value;
     }
@@ -26,7 +26,7 @@ public class StateTypeMapping : IStateTypeMapping
         if (_typesByName.TryGetValue(stateTypeKey, out var type))
             return type;
 
-        foreach (var assembly in _options.AssembliesToScan)
+        foreach (var assembly in _options.AssembliesToScanStateTypes)
         {
             type = assembly.GetTypes().FirstOrDefault(t => t.FullName == stateTypeKey);
             if (type is not null)

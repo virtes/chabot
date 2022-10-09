@@ -48,6 +48,7 @@ public class CommandDescriptorSelector : ICommandDescriptorSelector
         var result = new Dictionary<Type, CommandDescriptor>();
 
         foreach (var commandDescriptor in commandDescriptors
+                     .Where(cd => cd.AllowedWithAnyCommandText)
                      .OrderBy(cd => cd.AllowedInAnyState)
                         .ThenBy(cd => cd.StateTypes.Length)
                             .ThenBy(cd => cd.AllowedWithAnyCommandText)
@@ -72,21 +73,18 @@ public class CommandDescriptorSelector : ICommandDescriptorSelector
     // All descriptors sorted by AllowedWithAnyCommandText && AllowedInAnyState
     private readonly CommandDescriptor[] _allCommandDescriptors;
 
-    public CommandDescriptor? GetCommandDescriptor(string? commandText, Type? stateType)
+    public CommandDescriptor? GetCommandDescriptor(string? commandText, Type stateType)
     {
         commandText = commandText?.ToLowerInvariant();
 
         if (commandText is not null && _descriptorsByCommandText.TryGetValue(commandText, out var commandTextDescriptors))
         {
-            if (stateType is not null)
+            foreach (var commandTextDescriptor in commandTextDescriptors)
             {
-                foreach (var commandTextDescriptor in commandTextDescriptors)
+                foreach (var commandTextDescriptorStateType in commandTextDescriptor.StateTypes)
                 {
-                    foreach (var commandTextDescriptorStateType in commandTextDescriptor.StateTypes)
-                    {
-                        if (stateType == commandTextDescriptorStateType)
-                            return commandTextDescriptor;
-                    }
+                    if (stateType == commandTextDescriptorStateType)
+                        return commandTextDescriptor;
                 }
             }
 
@@ -97,7 +95,7 @@ public class CommandDescriptorSelector : ICommandDescriptorSelector
             }
         }
 
-        if (stateType is not null && _anyCommandTextDescriptorsByStateType.TryGetValue(stateType, out var stateTypeDescriptor))
+        if (_anyCommandTextDescriptorsByStateType.TryGetValue(stateType, out var stateTypeDescriptor))
         {
             return stateTypeDescriptor;
         }

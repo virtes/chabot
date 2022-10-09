@@ -55,27 +55,6 @@ public class SystemTextJsonStateSerializerTests
     }
 
     [Test]
-    public void ShouldSerializeNullState()
-    {
-        var createdAt = new DateTime(2020, 01, 01);
-        var metadata = new Dictionary<string, string?>
-        {
-            ["key1"] = "some-meta-value",
-            ["key2"] = null
-        };
-
-        var stateData = new UserState(null, createdAt, metadata);
-
-        var serializedStateData = _subject.SerializeState(stateData);
-
-        serializedStateData.Should().Be(
-            "{\"stateTypeKey\":null," +
-            "\"serializedState\":null," +
-            "\"createdAtUtc\":\"2020-01-01T00:00:00\"," +
-            "\"metadata\":{\"key1\":\"some-meta-value\",\"key2\":null}}");
-    }
-
-    [Test]
     public void ShouldDeserializeState()
     {
         _stateTypeMappingMock
@@ -103,31 +82,6 @@ public class SystemTextJsonStateSerializerTests
 
         actualStateData.State.Should().BeOfType<TestState>();
         actualStateData.State.Should().BeEquivalentTo(expectedState);
-
-        actualStateData.CreatedAtUtc.Should().Be(expectedCreatedAt);
-
-        actualStateData.Metadata.Should().BeEquivalentTo(expectedMetadata);
-    }
-    
-    [Test]
-    public void ShouldDeserializeNullState()
-    {
-        const string serializedStateData =
-            "{\"stateTypeKey\":null," +
-            "\"serializedState\":null," +
-            "\"createdAtUtc\":\"2020-01-01T00:00:00\"," +
-            "\"metadata\":{\"key1\":\"some-meta-value\",\"key2\":null}}";
-
-        var expectedCreatedAt = new DateTime(2020, 01, 01);
-        var expectedMetadata = new Dictionary<string, string?>
-        {
-            ["key1"] = "some-meta-value",
-            ["key2"] = null
-        };
-        
-        var actualStateData = _subject.DeserializeState(serializedStateData);
-
-        actualStateData.State.Should().BeNull();
 
         actualStateData.CreatedAtUtc.Should().Be(expectedCreatedAt);
 

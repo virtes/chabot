@@ -9,6 +9,7 @@ namespace Chabot.Message.Implementation;
 public class ScopedPipelineMessageHandler<TMessage, TUser, TUserId> 
     : IMessageHandler<TMessage, TUser, TUserId>
     where TUser : IUser<TUserId>
+    where TMessage : IMessage
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<ScopedPipelineMessageHandler<TMessage, TUser, TUserId>> _logger;
@@ -39,10 +40,9 @@ public class ScopedPipelineMessageHandler<TMessage, TUser, TUserId>
                 services: scope.ServiceProvider,
                 message: message,
                 user: user);
-
             await _handleMessage(messageContext);
             
-            _logger.LogDebug("Message from {UserId} user handled in {ElapsedMs} ms",
+            _logger.LogInformation("Message from {UserId} user handled in {ElapsedMs} ms",
                 user.Id, sw.ElapsedMilliseconds);
         }
         catch (Exception e)

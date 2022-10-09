@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using Chabot.Message;
-using Chabot.State;
 using Chabot.User;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +12,7 @@ public class MessageActionProvider<TMessage, TUser, TUserId>
     where TUser : IUser<TUserId> 
 {
     private readonly ILogger<MessageActionProvider<TMessage, TUser, TUserId>> _logger;
-    private readonly ICommandMessageActionBuilder _commandMessageActionBuilder;
+    private readonly ICommandMessageActionBuilder<TMessage, TUser, TUserId> _commandMessageActionBuilder;
     private readonly ICommandDescriptorSelector _commandDescriptorSelector;
 
     private readonly ConcurrentDictionary<CommandMessageActionKey,
@@ -21,7 +20,7 @@ public class MessageActionProvider<TMessage, TUser, TUserId>
 
     public MessageActionProvider(
         ILogger<MessageActionProvider<TMessage, TUser, TUserId>> logger,
-        ICommandMessageActionBuilder commandMessageActionBuilder,
+        ICommandMessageActionBuilder<TMessage, TUser, TUserId> commandMessageActionBuilder,
         ICommandDescriptorSelector commandDescriptorSelector)
     {
         _logger = logger;
@@ -30,36 +29,33 @@ public class MessageActionProvider<TMessage, TUser, TUserId>
     }
     
     public IMessageAction<TMessage, TUser, TUserId>? GetMessageAction(
-        ActionSelectionMetadata actionSelectionMetadata, IState? state)
+        ActionSelectionMetadata actionSelectionMetadata, Type stateType)
     {
-        var stateType = state?.GetType();
-        
         var commandDescriptor = _commandDescriptorSelector.GetCommandDescriptor(
-            commandText: actionSelectionMetadata.CommandText, 
+            commandText: actionSelectionMetadata.CommandText,
             stateType: stateType);
         if (commandDescriptor is null)
         {
             _logger.LogWarning("Could not get command descriptor for {@SelectionMetadata}, {StateType}",
-                actionSelectionMetadata, state);
+                actionSelectionMetadata, stateType.FullName);
             return null;
         }
 
-        return GetCommandMessageAction(commandDescriptor, stateType);
+        return GetCommandMessageAction(commandDescriptor);
     }
 
     private IMessageAction<TMessage, TUser, TUserId> GetCommandMessageAction(
-        CommandDescriptor commandDescriptor, Type? stateType)
+        CommandDescriptor commandDescriptor)
     {
         var key = new CommandMessageActionKey(
             type: commandDescriptor.Type, 
-            method: commandDescriptor.Method, 
-            stateType: stateType);
+            method: commandDescriptor.Method);
 
         return _messageActions.GetOrAdd(key, 
             k =>
             {
-                var action = _commandMessageActionBuilder.BuildInvokeCommand<TMessage, TUser, TUserId>(
-                    k.Type, k.Method, k.StateType);
+                var action = _commandMessageActionBuilder.BuildInvokeCommand(
+                    k.Type, k.Method);
                 return new InvokeCommandMessageAction<TMessage, TUser, TUserId>(k.Type, action);
             });
     }
@@ -70,13 +66,10 @@ public class MessageActionProvider<TMessage, TUser, TUserId>
 
         public readonly MethodInfo Method;
 
-        public readonly Type? StateType;
-
-        public CommandMessageActionKey(Type type, MethodInfo method, Type? stateType)
+        public CommandMessageActionKey(Type type, MethodInfo method)
         {
             Type = type;
             Method = method;
-            StateType = stateType;
         }
     }
 }

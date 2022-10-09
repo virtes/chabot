@@ -3,6 +3,7 @@ using Chabot.Configuration;
 using Chabot.Telegram.Configuration;
 using Chabot.Telegram.Implementation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Chabot.Telegram;
@@ -10,16 +11,16 @@ namespace Chabot.Telegram;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTgChabot(this IServiceCollection services,
-        string botToken,
+        Action<TelegramBotOptions> configureBotOptions,
         Action<ChabotBuilder<TgMessage, TgUser, long>> builderAction)
     {
         services
-            .AddOptions<TelegramBotClientOptions>()
-            .Configure(o => o.Token = botToken)
-            .ValidateDataAnnotations();
+            .AddOptions<TelegramBotOptions>()
+            .Configure(configureBotOptions)
+            .Validate(o => !string.IsNullOrEmpty(o.Token), "Bot Token must be specified");
         
-        services.AddSingleton<ITelegramBotClientProvider, TelegramBotClientProvider>();
-        services.AddSingleton<IActionSelectionMetadataFactory<TgMessage, TgUser, long>,
+        services.TryAddSingleton<ITelegramBotClientProvider, TelegramBotClientProvider>();
+        services.TryAddSingleton<IActionSelectionMetadataFactory<TgMessage, TgUser, long>,
             TgActionSelectionMetadataFactory>();
         
         services.AddChabot<TgMessage, TgUser, long>(builderAction);

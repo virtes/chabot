@@ -5,14 +5,14 @@ namespace Chabot.State.Implementation.SystemTextJson;
 public class UserStateJsonDto
 {
     [JsonPropertyName("stateTypeKey")]
-    public string? StateTypeKey { get; set; }
+    public string StateTypeKey { get; set; } = default!;
 
     [JsonPropertyName("serializedState")]
-    public string? SerializedState { get; set; }
+    public string SerializedState { get; set; } = default!;
 
     [JsonPropertyName("createdAtUtc")]
     public DateTime CreatedAtUtc { get; set; }
-    
+
     [JsonPropertyName("metadata")]
-    public Dictionary<string, string?>? Metadata { get; set; }
+    public IReadOnlyDictionary<string, string?> Metadata { get; set; } = default!;
 }

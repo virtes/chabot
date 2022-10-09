@@ -8,6 +8,10 @@ public class StateWriter<TUserId, TSerializedState> : IStateWriter<TUserId>
     private readonly IStateStorage<TUserId, TSerializedState> _stateStorage;
     private readonly IStateSerializer<TSerializedState> _stateSerializer;
 
+    // ReSharper disable once StaticMemberInGenericType
+    private static readonly IReadOnlyDictionary<string, string?> EmptyDictionary
+        = new Dictionary<string, string?>();
+
     public StateWriter(ILogger<StateWriter<TUserId, TSerializedState>> logger,
         IStateStorage<TUserId, TSerializedState> stateStorage,
         IStateSerializer<TSerializedState> stateSerializer)
@@ -17,12 +21,12 @@ public class StateWriter<TUserId, TSerializedState> : IStateWriter<TUserId>
         _stateSerializer = stateSerializer;
     }
 
-    public async Task<UserState> WriteState(IState? state, TUserId userId)
+    public async Task<UserState> WriteState(IState state, TUserId userId)
     {
         var userState = new UserState(
             state: state,
-            createdAtUtc: DateTime.UtcNow, 
-            metadata: null);
+            createdAtUtc: DateTime.UtcNow,
+            metadata: EmptyDictionary);
         
         var serializedState = _stateSerializer.SerializeState(userState);
         

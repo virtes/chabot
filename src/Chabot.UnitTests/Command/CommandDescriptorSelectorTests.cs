@@ -220,7 +220,7 @@ public class CommandDescriptorSelectorTests
             commandA_AnyCommand_stateA_AnyState, commandAB_stateA,
             commandAB_stateA_AnyState, commandABC_AnyCommand_stateA_AnyState);
 
-        subject.GetCommandDescriptor(NotMappedCommand, typeof(StateA)).Should().BeSameAs(commandAB_stateA);
+        subject.GetCommandDescriptor(NotMappedCommand, typeof(StateA)).Should().BeSameAs(commandA_AnyCommand_stateA_AnyState);
     }
 
     [Test]
@@ -333,6 +333,34 @@ public class CommandDescriptorSelectorTests
         
         subject.GetCommandDescriptor(NotMappedCommand, typeof(NotMappedState))
             .Should().BeSameAs(commandA_AnyCommand_AnyState);
+    }
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ShouldValidateCommandTextWhenMatchOnlyByState(bool reverse)
+    {
+        var anyCommandText_OnlyStateA = new CommandDescriptor
+        {
+            AllowedWithAnyCommandText = true,
+            CommandTexts = Array.Empty<string>(),
+            AllowedInAnyState = false,
+            StateTypes = new []{ typeof(StateA) }
+        };
+
+        var onlyCommandA_OnlyStateA = new CommandDescriptor
+        {
+            AllowedWithAnyCommandText = false,
+            CommandTexts = new []{ CommandA },
+            AllowedInAnyState = false,
+            StateTypes = new []{ typeof(StateA) }
+        };
+
+        var subject = CreateSelector(reverse,
+            anyCommandText_OnlyStateA, onlyCommandA_OnlyStateA);
+
+        subject.GetCommandDescriptor(NotMappedCommand, typeof(StateA))
+            .Should().BeSameAs(anyCommandText_OnlyStateA);
     }
 
     private static CommandDescriptorSelector CreateSelector(bool reverse, params CommandDescriptor[] descriptors)

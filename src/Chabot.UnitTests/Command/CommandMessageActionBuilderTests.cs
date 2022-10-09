@@ -12,8 +12,6 @@ public class CommandMessageActionBuilderTests
 {
     private Mock<IServiceProvider> _serviceProviderMock = default!;
     private Mock<TestCommandGroup> _commandGroupMock = default!;
-
-    private CommandMessageActionBuilder _subject = default!;
     
     [SetUp]
     public void Setup()
@@ -24,101 +22,115 @@ public class CommandMessageActionBuilderTests
         _serviceProviderMock
             .Setup(sp => sp.GetService(typeof(TestCommandGroup)))
             .Returns(_commandGroupMock.Object);
-        
-        _subject = new CommandMessageActionBuilder();
     }
 
     [Test]
-    [TestCase(nameof(TestCommandGroup.ExecuteWithoutArgs))]
-    [TestCase(nameof(TestCommandGroup.ExecuteWithoutArgsTask))]
-    public async Task ShouldInvokeCommandGroupMethod(string methodName)
+    [TestCase(nameof(TestCommandGroup.Execute))]
+    [TestCase(nameof(TestCommandGroup.ExecuteTask))]
+    public async Task ShouldInvokeParameterlessCommandGroupMethodWithoutValueResolver(string methodName)
     {
         var commandGroupType = typeof(TestCommandGroup);
         var commandMethod = commandGroupType.GetMethod(methodName)!;
 
-        var action = _subject.BuildInvokeCommand<IMessage, IUser<int>, int>(
-            commandGroupType, commandMethod, typeof(SomeState));
+        var subject = CreateSubject();
+        var action = subject.BuildInvokeCommand(commandGroupType, commandMethod);
 
-        await action(_commandGroupMock.Object, null);
+        var messageContext = CreateContext(DefaultState.Instance);
+        await action(_commandGroupMock.Object, messageContext);
 
-        if (methodName == nameof(TestCommandGroup.ExecuteWithoutArgs))
-            _commandGroupMock.Verify(m => m.ExecuteWithoutArgs(), Times.Once);
-        else if (methodName == nameof(TestCommandGroup.ExecuteWithoutArgsTask))
-            _commandGroupMock.Verify(m => m.ExecuteWithoutArgsTask(), Times.Once);
+        if (methodName == nameof(TestCommandGroup.Execute))
+            _commandGroupMock.Verify(m => m.Execute(), Times.Once);
+        else if (methodName == nameof(TestCommandGroup.ExecuteTask))
+            _commandGroupMock.Verify(m => m.ExecuteTask(), Times.Once);
 
         _commandGroupMock.VerifyNoOtherCalls();
     }
-    
+
     [Test]
-    [TestCase(nameof(TestCommandGroup.ExecuteWithStateArg))]
-    [TestCase(nameof(TestCommandGroup.ExecuteWithStateArgTask))]
-    public async Task ShouldInvokeCommandGroupMethodWithState(string methodName)
+    [TestCase(nameof(TestCommandGroup.ExecuteWithParameters))]
+    [TestCase(nameof(TestCommandGroup.ExecuteWithParametersTask))]
+    public async Task ShouldInvokeCommandGroupMethodWithoutValueResolver(string methodName)
     {
         var commandGroupType = typeof(TestCommandGroup);
         var commandMethod = commandGroupType.GetMethod(methodName)!;
 
-        var state = new SomeState();
-        
-        var action = _subject.BuildInvokeCommand<IMessage, IUser<int>, int>(
-            commandGroupType, commandMethod, typeof(SomeState));
+        var subject = CreateSubject();
+        var action = subject.BuildInvokeCommand(commandGroupType, commandMethod);
 
-        await action(_commandGroupMock.Object, state);
+        var messageContext = CreateContext(DefaultState.Instance);
+        await action(_commandGroupMock.Object, messageContext);
 
-        if (methodName == nameof(TestCommandGroup.ExecuteWithStateArg))
-            _commandGroupMock.Verify(m => m.ExecuteWithStateArg(state), Times.Once);
-        else if (methodName == nameof(TestCommandGroup.ExecuteWithStateArgTask))
-            _commandGroupMock.Verify(m => m.ExecuteWithStateArgTask(state), Times.Once);
+        if (methodName == nameof(TestCommandGroup.ExecuteWithParameters))
+            _commandGroupMock.Verify(m => m.ExecuteWithParameters(null, null), Times.Once);
+        else if (methodName == nameof(TestCommandGroup.ExecuteWithParametersTask))
+            _commandGroupMock.Verify(m => m.ExecuteWithParametersTask(null, null), Times.Once);
 
         _commandGroupMock.VerifyNoOtherCalls();
     }
-    
+
     [Test]
-    public async Task ShouldInvokeCommandGroupMethodWithStateAndExtraArg()
+    [TestCase(nameof(TestCommandGroup.ExecuteWithParameters), null)]
+    [TestCase(nameof(TestCommandGroup.ExecuteWithParametersTask), null)]
+    [TestCase(nameof(TestCommandGroup.ExecuteWithParameters), "some_value")]
+    [TestCase(nameof(TestCommandGroup.ExecuteWithParametersTask), "some_value")]
+    public async Task ShouldInvokeCommandGroupMethodWithValueResolver(string methodName, string? parameterValue)
     {
         var commandGroupType = typeof(TestCommandGroup);
-        var commandMethod = commandGroupType.GetMethod(nameof(TestCommandGroup.ExecuteWithStateArgAnExtraArg))!;
+        var commandMethod = commandGroupType.GetMethod(methodName)!;
 
-        var state = new SomeState();
-        
-        var action = _subject.BuildInvokeCommand<IMessage, IUser<int>, int>(
-            commandGroupType, commandMethod, typeof(SomeState));
+        var messageContext = CreateContext(DefaultState.Instance);
+        var parameterInfo = commandMethod.GetParameters().Single(p => p.Name == "parameter");
 
-        await action(_commandGroupMock.Object, state);
-        
-        _commandGroupMock.Verify(m => m.ExecuteWithStateArgAnExtraArg(default!, state, default), Times.Once);
-        _commandGroupMock.VerifyNoOtherCalls();
-    }
-    
-    [Test]
-    public async Task ShouldInvokeCommandGroupMethodWithStateAndExtraArgWhenStateIsNull()
-    {
-        var commandGroupType = typeof(TestCommandGroup);
-        var commandMethod = commandGroupType.GetMethod(nameof(TestCommandGroup.ExecuteWithStateArgAnExtraArg))!;
+        var valueResolverMock = new Mock<ICommandParameterValueResolver<IMessage, IUser<int>, int>>();
+        valueResolverMock
+            .Setup(vr => vr.ResolveParameterValue(parameterInfo, messageContext))
+            .Returns(parameterValue);
 
-        var action = _subject.BuildInvokeCommand<IMessage, IUser<int>, int>(
-            commandGroupType, commandMethod, null);
+        var valueResolverMockFactory = new Mock<ICommandParameterValueResolverFactory<IMessage, IUser<int>, int>>();
+        valueResolverMockFactory
+            .Setup(vrf => vrf.CreateValueResolver(parameterInfo))
+            .Returns(valueResolverMock.Object);
 
-        await action(_commandGroupMock.Object, null);
-        
-        _commandGroupMock.Verify(m => m.ExecuteWithStateArgAnExtraArg(default!, default!, default), Times.Once);
+        var subject = CreateSubject(valueResolverMockFactory.Object);
+        var action = subject.BuildInvokeCommand(commandGroupType, commandMethod);
+
+        await action(_commandGroupMock.Object, messageContext);
+
+        if (methodName == nameof(TestCommandGroup.ExecuteWithParameters))
+            _commandGroupMock.Verify(m => m.ExecuteWithParameters(parameterValue, null), Times.Once);
+        else if (methodName == nameof(TestCommandGroup.ExecuteWithParametersTask))
+            _commandGroupMock.Verify(m => m.ExecuteWithParametersTask(parameterValue, null), Times.Once);
+
         _commandGroupMock.VerifyNoOtherCalls();
     }
 
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class TestCommandGroup : CommandGroupBase<IMessage, IUser<int>, int>
     {
-        public virtual void ExecuteWithoutArgs() { }
+        public virtual void Execute() { }
 
-        public virtual Task ExecuteWithoutArgsTask() => Task.CompletedTask;
+        public virtual Task ExecuteTask() => Task.CompletedTask;
 
-        public virtual void ExecuteWithStateArg(SomeState state) { }
+        public virtual void ExecuteWithParameters(string? parameter, string? extraParameter) { }
         
-        public virtual Task ExecuteWithStateArgTask(SomeState state) => Task.CompletedTask;
-
-        public virtual void ExecuteWithStateArgAnExtraArg(string stringArg, SomeState state, int intArg) { }
+        public virtual Task ExecuteWithParametersTask(string? parameter, string? extraParameter)
+            => Task.CompletedTask;
     }
 
-    public class SomeState : IState
+    private static MessageContext<IMessage, IUser<int>, int> CreateContext(IState state)
     {
+        return new MessageContext<IMessage, IUser<int>, int>(
+            services: default!,
+            message: default!,
+            user: default!)
+        {
+            UserState = new UserState(state, DateTime.UtcNow, new Dictionary<string, string?>())
+        };
+    }
+
+    private static CommandMessageActionBuilder<IMessage, IUser<int>, int> CreateSubject(
+        params ICommandParameterValueResolverFactory<IMessage, IUser<int>, int>[] resolverFactories)
+    {
+        return new CommandMessageActionBuilder<IMessage, IUser<int>, int>(resolverFactories);
     }
 }

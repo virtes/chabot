@@ -1,0 +1,41 @@
+name: Nuget CI template
+
+on:
+  workflow_call:
+    inputs:
+      project-name:
+        required: true
+        type: string
+      tag-prefix:
+        required: true
+        type: string
+    secrets:
+      nuget-api-key:
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore
+      run: dotnet restore ${{ inputs.project-name }}
+    - name: Build
+      run: dotnet build --no-restore --configuration Release ${{ inputs.project-name }}
+    - name: Pack
+      run: |
+        TAG_NAME=$GITHUB_REF_NAME
+        VERSION="${TAG_NAME/${{ inputs.tag-prefix }}/}"
+        dotnet pack --configuration Release -o out -p:PackageVersion=$VERSION /p:Version=$VERSION ${{ inputs.project-name }}
+    - name: Push
+      run: dotnet nuget push out/*.nupkg -k ${NUGET_API_KEY} -s https://api.nuget.org/v3/index.json
+      env:
+        NUGET_API_KEY: ${{ secrets.nuget-api-key }}

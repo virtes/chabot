@@ -7,6 +7,11 @@ public class TgActionSelectionMetadataFactory
 {
     public ActionSelectionMetadata GetMetadata(TgMessage message, TgUser user)
     {
-        return new ActionSelectionMetadata(commandText: message.Text);
+        var commandText = message.Text;
+
+        if (commandText is not null && commandText.StartsWith('/'))
+            commandText = commandText.Substring(1, commandText.Length - 1);
+
+        return new ActionSelectionMetadata(commandText: commandText);
     }
 }

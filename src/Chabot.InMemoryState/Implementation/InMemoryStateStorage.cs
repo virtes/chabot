@@ -3,17 +3,17 @@ using Chabot.State;
 
 namespace Chabot.InMemoryState.Implementation;
 
-public class InMemoryStateStorage<TUserId, TSerializedState> 
-    : IStateStorage<TUserId, TSerializedState> 
+public class InMemoryStateStorage<TUserId, TSerializedState>
+    : IStateStorage<TUserId, TSerializedState>
     where TUserId : IEquatable<TUserId>
 {
     private readonly ConcurrentDictionary<TUserId, TSerializedState> _stateByUserId = new();
 
-    public Task WriteState(TUserId userId, TSerializedState state)
+    public ValueTask WriteState(TUserId userId, TSerializedState state)
     {
         _stateByUserId.AddOrUpdate(userId, state, (_, _) => state);
         
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask<TSerializedState?> ReadState(TUserId userId)

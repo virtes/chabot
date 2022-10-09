@@ -1,15 +1,13 @@
 using System.Reflection;
 using Chabot.Message;
-using Chabot.State;
 using Chabot.User;
 
 namespace Chabot.Command;
 
-public interface ICommandMessageActionBuilder
+public interface ICommandMessageActionBuilder<TMessage, TUser, TUserId>
+    where TMessage : IMessage
+    where TUser : IUser<TUserId>
 {
-    Func<CommandGroupBase<TMessage, TUser, TUserId>, IState?, Task> BuildInvokeCommand
-        <TMessage, TUser, TUserId>(
-            Type type, MethodInfo method, Type? stateType)
-        where TMessage : IMessage
-        where TUser : IUser<TUserId>;
+    Func<CommandGroupBase<TMessage, TUser, TUserId>, MessageContext<TMessage, TUser, TUserId>, Task>
+        BuildInvokeCommand(Type type, MethodInfo method);
 }
