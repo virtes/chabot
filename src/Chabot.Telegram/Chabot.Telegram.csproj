@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Chabot" Version="1.0.1" />
+      <PackageReference Include="Chabot" Version="1.0.2" />
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
       <PackageReference Include="Telegram.Bot" Version="18.0.0" />
       <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2" />

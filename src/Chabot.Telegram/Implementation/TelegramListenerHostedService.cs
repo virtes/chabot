@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Chabot.Message;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,9 @@ public class TelegramListenerHostedService : IHostedService
 
     private async Task UpdateHandler(ITelegramBotClient telegramBotClient, Update update, CancellationToken cancellationToken)
     {
+        using var activity = new Activity("Handle telegram message");
+        activity.Start();
+
         _logger.LogTrace("Received telegram update {@Update}", update);
 
         if (update.Type != UpdateType.Message)
@@ -82,6 +86,7 @@ public class TelegramListenerHostedService : IHostedService
         {
             _logger.LogError(e, "Unhandled exception while handling telegram message {@Message} from {@User}",
                 telegramMessage, telegramUser);
+            activity.SetException(e);
             throw;
         }
     }

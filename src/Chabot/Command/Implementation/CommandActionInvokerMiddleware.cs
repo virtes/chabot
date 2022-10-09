@@ -40,7 +40,7 @@ public class CommandActionInvokerMiddleware<TMessage, TUser, TUserId>
         if (messageAction is null)
         {
             _logger.LogError("Could not find message action");
-            return;
+            throw new InvalidOperationException("Message action not found");
         }
 
         await messageAction.Execute(messageContext);

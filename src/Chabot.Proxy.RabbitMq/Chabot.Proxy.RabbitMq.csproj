@@ -9,12 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Chabot\Chabot.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Confluent.Kafka" Version="1.9.3" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+      <PackageReference Include="Chabot" Version="1.0.2" />
+      <PackageReference Include="EasyNetQ" Version="7.2.1" />
+      <PackageReference Include="EasyNetQ.DI.Microsoft" Version="7.2.1" />
+      <PackageReference Include="EasyNetQ.Logging.Serilog" Version="7.2.1" />
       <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="6.0.0" />
     </ItemGroup>
 

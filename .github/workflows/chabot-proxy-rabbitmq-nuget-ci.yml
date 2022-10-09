@@ -1,0 +1,17 @@
+name: Chabot.Proxy.RabbitMq Nuget CI
+
+on:
+  push:
+    tags:
+      - 'chabot-proxy-rabbitmq-v*'
+
+jobs:
+  call-workflow-passing-data:
+    permissions:
+      contents: read
+    uses: virtes/chabot/.github/workflows/nuget-ci-template.yml@master
+    with:
+      project-name: Chabot.Proxy.RabbitMq
+      tag-prefix: chabot-proxy-rabbitmq-v
+    secrets:
+      nuget-api-key: ${{ secrets.NUGET_API_KEY }}
