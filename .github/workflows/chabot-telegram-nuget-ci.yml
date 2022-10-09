@@ -1,4 +1,4 @@
-name: Chabot Nuget CI
+name: Chabot.Telegram Nuget CI
 
 on:
   push:

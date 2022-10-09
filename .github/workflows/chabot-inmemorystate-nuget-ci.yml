@@ -1,4 +1,4 @@
-name: Chabot Nuget CI
+name: Chabot.InMemoryState Nuget CI
 
 on:
   push:
