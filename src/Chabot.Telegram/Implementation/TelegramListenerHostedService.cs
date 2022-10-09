@@ -2,6 +2,7 @@ using Chabot.Message;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -28,12 +29,13 @@ public class TelegramListenerHostedService : IHostedService
         var client = _telegramBotClientProvider.GetClient();
 
         client.StartReceiving(
-            UpdateHandler, 
+            UpdateHandler,
             ErrorHandler,
-            cancellationToken: cancellationToken);
-        
+            new ReceiverOptions(),
+            cancellationToken);
+
         _logger.LogInformation("Telegram poll listener started");
-        
+
         return Task.CompletedTask;
     }
 

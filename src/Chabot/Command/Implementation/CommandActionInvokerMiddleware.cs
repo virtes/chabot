@@ -35,7 +35,7 @@ public class CommandActionInvokerMiddleware<TMessage, TUser, TUserId>
 
         var messageAction = _messageActionProvider.GetMessageAction(
             actionSelectionMetadata: actionSelectionMetadata,
-            state: messageContext.UserState?.State);
+            stateType: messageContext.UserState.State.GetType());
 
         if (messageAction is null)
         {

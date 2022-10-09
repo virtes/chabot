@@ -45,7 +45,7 @@ public class CommandDescriptorsProviderTests
                 AllowedWithAnyCommandText = false,
                 CommandTexts = new []{ CommandA },
                 AllowedInAnyState = true,
-                StateTypes = Array.Empty<Type>()
+                StateTypes = new []{ typeof(StateB) }
             },
             new CommandDescriptor
             {
@@ -70,13 +70,17 @@ public class CommandDescriptorsProviderTests
 
     public class CommandGroup : CommandGroupBase<IMessage, IUser<int>, int>
     {
-        [Command(CommandA, AllowedInAnyState = true)]
+        [Command(CommandA)]
+        [AllowedInAnyState]
+        [AllowedState(typeof(StateB))]
         public void Action() { }
-        
-        [Command(AllowedWithAnyCommandText = true, AllowedInAnyState = true)]
+
+        [Command(AllowedWithAnyCommandText = true)]
+        [AllowedInAnyState]
         public void ActionWithStateArg(StateA state) { }
         
         [Command(AllowedWithAnyCommandText = true)]
+        [AllowedState(typeof(StateB))]
         public void ActionWithCombinedState(StateA stateA, StateB stateB) { }
     }
 

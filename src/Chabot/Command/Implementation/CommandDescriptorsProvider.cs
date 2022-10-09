@@ -43,6 +43,8 @@ public class CommandDescriptorsProvider : ICommandDescriptorsProvider
             if (commandAttribute is null)
                 continue;
 
+            var allowedStateAttributes = methodInfo.GetCustomAttributes<AllowedStateAttribute>().ToArray();
+
             if (!commandAttribute.AllowedWithAnyCommandText && commandAttribute.CommandTexts.Length == 0)
             {
                 throw new InvalidCommandActionException(commandGroupType, methodInfo,
@@ -50,20 +52,29 @@ public class CommandDescriptorsProvider : ICommandDescriptorsProvider
                     $"is false and no command texts are specified)");
             }
 
-            var allowedInAnyState = commandAttribute.AllowedInAnyState;
-            var stateTypes = new List<Type>();
-            
+            var allowedInAnyState = methodInfo.GetCustomAttribute<AllowedInAnyStateAttribute>() != null;
+            var stateTypes = new HashSet<Type>();
+
             foreach (var parameter in methodInfo.GetParameters())
             {
                 var parameterType = parameter.ParameterType;
 
-                if (!parameterType.IsAssignableTo(typeof(IState)) || !parameterType.IsClass || parameterType.IsAbstract)
+                if (!parameterType.IsAssignableTo(typeof(IState)))
+                    continue;
+
+                stateTypes.Add(parameterType);
+            }
+
+            foreach (var allowedStateAttribute in allowedStateAttributes)
+            {
+                if (!allowedStateAttribute.StateType.IsAssignableTo(typeof(IState)))
                 {
                     throw new InvalidCommandActionException(commandGroupType, methodInfo,
-                        $"action has invalid parameter ({parameter.Name})");
+                        $"action allowed state ({nameof(AllowedStateAttribute)}) " +
+                        $"has invalid state type");
                 }
-                
-                stateTypes.Add(parameterType);
+
+                stateTypes.Add(allowedStateAttribute.StateType);
             }
 
             if (!allowedInAnyState && stateTypes.Count == 0)

@@ -2,15 +2,15 @@ namespace Chabot.State;
 
 public class UserState
 {
-    public IState? State { get; }
+    public IState State { get; }
 
     public DateTime CreatedAtUtc { get; }
 
-    public Dictionary<string, string?>? Metadata { get; }
+    public IReadOnlyDictionary<string, string?> Metadata { get; }
 
-    public UserState(IState? state, 
+    public UserState(IState state,
         DateTime createdAtUtc, 
-        Dictionary<string, string?>? metadata)
+        IReadOnlyDictionary<string, string?> metadata)
     {
         State = state;
         CreatedAtUtc = createdAtUtc;

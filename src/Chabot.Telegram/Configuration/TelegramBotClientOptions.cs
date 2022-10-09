@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Chabot.Telegram.Configuration;
 
-public class TelegramBotClientOptions
+public class TelegramBotOptions
 {
     [Required(AllowEmptyStrings = false)]
     public string Token { get; set; } = default!;

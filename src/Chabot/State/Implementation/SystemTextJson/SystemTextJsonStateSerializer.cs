@@ -9,7 +9,7 @@ public class SystemTextJsonStateSerializer : IStateSerializer<string>
     private readonly ILogger<SystemTextJsonStateSerializer> _logger;
     private readonly IStateTypeMapping _stateTypeMapping;
     private readonly JsonSerializerOptions _stateSerializerOptions;
-    
+
     public SystemTextJsonStateSerializer(
         JsonSerializerOptions? stateSerializerOptions,
         ILogger<SystemTextJsonStateSerializer> logger,
@@ -22,19 +22,10 @@ public class SystemTextJsonStateSerializer : IStateSerializer<string>
 
     public string SerializeState(UserState userState)
     {
-        string? stateTypeKey = null;
-        string? serializedState = null;
-
-        if (userState.State is not null)
-        {
-            stateTypeKey = _stateTypeMapping.GetStateTypeKey(userState.State.GetType());
-            serializedState = JsonSerializer.Serialize((object)userState.State, _stateSerializerOptions);
-        }
-
         var userStateDto = new UserStateJsonDto
         {
-            StateTypeKey = stateTypeKey,
-            SerializedState = serializedState,
+            StateTypeKey = _stateTypeMapping.GetStateTypeKey(userState.State.GetType()),
+            SerializedState = JsonSerializer.Serialize((object)userState.State, _stateSerializerOptions),
             CreatedAtUtc = userState.CreatedAtUtc,
             Metadata = userState.Metadata
         };
@@ -48,14 +39,13 @@ public class SystemTextJsonStateSerializer : IStateSerializer<string>
         {
             var userStateDto = JsonSerializer.Deserialize<UserStateJsonDto>(serializedStateData)!;
 
-            if (userStateDto.StateTypeKey is null || userStateDto.SerializedState is null)
-                return new UserState(null, userStateDto.CreatedAtUtc, userStateDto.Metadata);
-
             var stateType = _stateTypeMapping.GetStateType(userStateDto.StateTypeKey);
-        
-            var state = (IState)JsonSerializer.Deserialize(userStateDto.SerializedState, stateType, _stateSerializerOptions)!;
+            var state = (IState)JsonSerializer.Deserialize(
+                json: userStateDto.SerializedState,
+                returnType: stateType,
+                options: _stateSerializerOptions)!;
 
-            return new UserState(state, userStateDto.CreatedAtUtc, userStateDto.Metadata);
+            return new UserState(state, userStateDto.CreatedAtUtc, userStateDto.Metadata );
         }
         catch (Exception e)
         {

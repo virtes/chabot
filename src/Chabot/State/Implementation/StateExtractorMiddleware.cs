@@ -1,7 +1,7 @@
-using Chabot.State;
+using Chabot.Message;
 using Chabot.User;
 
-namespace Chabot.Message.Implementation;
+namespace Chabot.State.Implementation;
 
 public class StateExtractorMiddleware<TMessage, TUser, TUserId>
     : IMiddleware<TMessage, TUser, TUserId> 

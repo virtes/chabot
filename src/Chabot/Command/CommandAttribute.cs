@@ -12,6 +12,4 @@ public class CommandAttribute : Attribute
     public string[] CommandTexts { get; }
 
     public bool AllowedWithAnyCommandText { get; set; }
-
-    public bool AllowedInAnyState { get; set; }
 }

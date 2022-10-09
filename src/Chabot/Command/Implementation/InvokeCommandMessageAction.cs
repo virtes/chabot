@@ -1,5 +1,4 @@
 using Chabot.Message;
-using Chabot.State;
 using Chabot.User;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,10 +10,10 @@ public class InvokeCommandMessageAction<TMessage, TUser, TUserId>
     where TUser : IUser<TUserId> 
 {
     private readonly Type _commandGroupType;
-    private readonly Func<CommandGroupBase<TMessage, TUser, TUserId>, IState?, Task> _action;
+    private readonly Func<CommandGroupBase<TMessage, TUser, TUserId>, MessageContext<TMessage, TUser, TUserId>, Task> _action;
 
     public InvokeCommandMessageAction(Type commandGroupType, 
-        Func<CommandGroupBase<TMessage, TUser, TUserId>, IState?, Task> action)
+        Func<CommandGroupBase<TMessage, TUser, TUserId>, MessageContext<TMessage, TUser, TUserId>, Task> action)
     {
         _commandGroupType = commandGroupType;
         _action = action;
@@ -22,10 +21,11 @@ public class InvokeCommandMessageAction<TMessage, TUser, TUserId>
     
     public async Task Execute(MessageContext<TMessage, TUser, TUserId> messageContext)
     {
-        var instance = (CommandGroupBase<TMessage, TUser, TUserId>)messageContext.Services.GetRequiredService(_commandGroupType);
+        var instance = (CommandGroupBase<TMessage, TUser, TUserId>)
+            messageContext.Services.GetRequiredService(_commandGroupType);
 
         instance.Context = messageContext;
         
-        await _action(instance, messageContext.UserState?.State);
+        await _action(instance, messageContext);
     }
 }

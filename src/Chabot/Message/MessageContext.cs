@@ -5,6 +5,7 @@ namespace Chabot.Message;
 
 public class MessageContext<TMessage, TUser, TUserId>
     where TUser : IUser<TUserId>
+    where TMessage : IMessage
 {
     public MessageContext(IServiceProvider services, TMessage message, TUser user)
     {

@@ -6,9 +6,10 @@ namespace Chabot.Telegram.Implementation;
 
 public class TelegramBotClientProvider : ITelegramBotClientProvider
 {
-    private readonly TelegramBotClient _telegramBotClient; 
+    private readonly TelegramBotClient _telegramBotClient;
     
-    public TelegramBotClientProvider(IOptions<TelegramBotClientOptions> optionsAccessor)
+    public TelegramBotClientProvider(
+        IOptions<TelegramBotOptions> optionsAccessor)
     {
         var options = optionsAccessor.Value;
         _telegramBotClient = new TelegramBotClient(options.Token);
