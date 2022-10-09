@@ -2,6 +2,6 @@
 namespace Chabot;
 
 [AttributeUsage(AttributeTargets.Parameter)]
-public class FromMessageTextAttribute : Attribute
+public class FromUserIdAttribute : Attribute
 {
 }

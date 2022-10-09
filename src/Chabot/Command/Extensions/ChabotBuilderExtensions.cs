@@ -6,6 +6,7 @@ using Chabot.Configuration;
 using Chabot.Message;
 using Chabot.Message.Implementation;
 using Chabot.User;
+using Chabot.User.Implementation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -53,6 +54,8 @@ public static partial class ChabotBuilderExtensions
 
         chabotBuilder.Services.AddSingleton<ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>,
             CommandTextParameterValueResolverFactory<TMessage, TUser, TUserId>>();
+        chabotBuilder.Services.AddSingleton<ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>,
+            UserIdParameterValueResolverFactory<TMessage, TUser, TUserId>>();
 
         return chabotBuilder;
     }
