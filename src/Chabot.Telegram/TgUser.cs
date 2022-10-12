@@ -13,4 +13,7 @@ public class TgUser : IUser<long>
 
     [JsonPropertyName("isBot")]
     public bool IsBot { get; set; }
+
+    [JsonPropertyName("languageCode")]
+    public string? LanguageCode { get; set; }
 }

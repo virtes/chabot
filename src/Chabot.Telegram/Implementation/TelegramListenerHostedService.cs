@@ -75,7 +75,8 @@ public class TelegramListenerHostedService : IHostedService
         {
             Id = update.Message.From.Id, 
             Username = update.Message.From.Username, 
-            IsBot = update.Message.From.IsBot
+            IsBot = update.Message.From.IsBot,
+            LanguageCode = update.Message.From.LanguageCode
         };
 
         try
