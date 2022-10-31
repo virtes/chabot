@@ -1,11 +1,13 @@
 using Chabot.Command;
+using TelegramMessage = global::Telegram.Bot.Types.Message;
+using TelegramUser = global::Telegram.Bot.Types.User;
 
 namespace Chabot.Telegram.Implementation;
 
-public class TgActionSelectionMetadataFactory
-    : IActionSelectionMetadataFactory<TgMessage, TgUser, long>
+public class TelegramActionSelectionMetadataFactory
+    : IActionSelectionMetadataFactory<TelegramMessage, TelegramUser>
 {
-    public ActionSelectionMetadata GetMetadata(TgMessage message, TgUser user)
+    public ActionSelectionMetadata GetMetadata(TelegramMessage message, TelegramUser user)
     {
         var commandText = message.Text;
 

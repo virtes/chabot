@@ -6,6 +6,8 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramMessage = Telegram.Bot.Types.Message;
+using TelegramUser = Telegram.Bot.Types.User;
 
 namespace Chabot.Telegram.Implementation;
 
@@ -13,12 +15,12 @@ public class TelegramListenerHostedService : IHostedService
 {
     private readonly ITelegramBotClientProvider _telegramBotClientProvider;
     private readonly ILogger<TelegramListenerHostedService> _logger;
-    private readonly IMessageHandler<TgMessage, TgUser, long> _messageHandler;
+    private readonly IMessageHandler<TelegramMessage, TelegramUser> _messageHandler;
 
     public TelegramListenerHostedService(
         ITelegramBotClientProvider telegramBotClientProvider,
         ILogger<TelegramListenerHostedService> logger,
-        IMessageHandler<TgMessage, TgUser, long> messageHandler)
+        IMessageHandler<TelegramMessage, TelegramUser> messageHandler)
     {
         _telegramBotClientProvider = telegramBotClientProvider;
         _logger = logger;
@@ -65,34 +67,20 @@ public class TelegramListenerHostedService : IHostedService
             return;
         }
 
-        var telegramMessage = new TgMessage
-        {
-            Id = update.Message.MessageId,
-            Text = update.Message.Text
-        };
-
-        var telegramUser = new TgUser
-        {
-            Id = update.Message.From.Id, 
-            Username = update.Message.From.Username, 
-            IsBot = update.Message.From.IsBot,
-            LanguageCode = update.Message.From.LanguageCode
-        };
-
         try
         {
-            await _messageHandler.HandleMessage(telegramMessage, telegramUser);
+            await _messageHandler.HandleMessage(update.Message, update.Message.From);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Unhandled exception while handling telegram message {@Message} from {@User}",
-                telegramMessage, telegramUser);
+            _logger.LogError(e, "Unhandled exception while handling telegram update {@Update}", update);
             activity.SetException(e);
             throw;
         }
     }
 
-    private Task ErrorHandler(ITelegramBotClient telegramBotClient, Exception exception, CancellationToken cancellationToken)
+    private Task ErrorHandler(ITelegramBotClient telegramBotClient,
+        Exception exception, CancellationToken cancellationToken)
     {
         _logger.LogError(exception, "Telegram unhandled exception");
 

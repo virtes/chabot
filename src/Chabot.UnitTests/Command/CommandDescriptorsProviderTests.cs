@@ -1,9 +1,7 @@
 using Chabot.Command;
 using Chabot.Command.Configuration;
 using Chabot.Command.Implementation;
-using Chabot.Message;
 using Chabot.State;
-using Chabot.User;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -68,7 +66,7 @@ public class CommandDescriptorsProviderTests
         });
     }
 
-    public class CommandGroup : CommandGroupBase<IMessage, IUser<int>, int>
+    public class CommandGroup : CommandGroupBase<Message, User>
     {
         [Command(CommandA)]
         [AllowedInAnyState]

@@ -2,7 +2,6 @@ using Chabot.Command;
 using Chabot.Command.Implementation;
 using Chabot.Message;
 using Chabot.State;
-using Chabot.User;
 using Moq;
 using NUnit.Framework;
 
@@ -81,12 +80,12 @@ public class CommandMessageActionBuilderTests
         var messageContext = CreateContext(DefaultState.Instance);
         var parameterInfo = commandMethod.GetParameters().Single(p => p.Name == "parameter");
 
-        var valueResolverMock = new Mock<ICommandParameterValueResolver<IMessage, IUser<int>, int>>();
+        var valueResolverMock = new Mock<ICommandParameterValueResolver<Message, User>>();
         valueResolverMock
             .Setup(vr => vr.ResolveParameterValue(parameterInfo, messageContext))
             .Returns(parameterValue);
 
-        var valueResolverMockFactory = new Mock<ICommandParameterValueResolverFactory<IMessage, IUser<int>, int>>();
+        var valueResolverMockFactory = new Mock<ICommandParameterValueResolverFactory<Message, User>>();
         valueResolverMockFactory
             .Setup(vrf => vrf.CreateValueResolver(parameterInfo))
             .Returns(valueResolverMock.Object);
@@ -105,7 +104,7 @@ public class CommandMessageActionBuilderTests
     }
 
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-    public class TestCommandGroup : CommandGroupBase<IMessage, IUser<int>, int>
+    public class TestCommandGroup : CommandGroupBase<Message, User>
     {
         public virtual void Execute() { }
 
@@ -117,9 +116,9 @@ public class CommandMessageActionBuilderTests
             => Task.CompletedTask;
     }
 
-    private static MessageContext<IMessage, IUser<int>, int> CreateContext(IState state)
+    private static MessageContext<Message, User> CreateContext(IState state)
     {
-        return new MessageContext<IMessage, IUser<int>, int>(
+        return new MessageContext<Message, User>(
             services: default!,
             message: default!,
             user: default!)
@@ -128,9 +127,9 @@ public class CommandMessageActionBuilderTests
         };
     }
 
-    private static CommandMessageActionBuilder<IMessage, IUser<int>, int> CreateSubject(
-        params ICommandParameterValueResolverFactory<IMessage, IUser<int>, int>[] resolverFactories)
+    private static CommandMessageActionBuilder<Message, User> CreateSubject(
+        params ICommandParameterValueResolverFactory<Message, User>[] resolverFactories)
     {
-        return new CommandMessageActionBuilder<IMessage, IUser<int>, int>(resolverFactories);
+        return new CommandMessageActionBuilder<Message, User>(resolverFactories);
     }
 }

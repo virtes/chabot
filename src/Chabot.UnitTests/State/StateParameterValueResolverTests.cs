@@ -1,7 +1,6 @@
 using Chabot.Message;
 using Chabot.State;
 using Chabot.State.Implementation;
-using Chabot.User;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -9,12 +8,12 @@ namespace Chabot.UnitTests.State;
 
 public class StateParameterValueResolverTests
 {
-    private StateParameterValueResolver<IMessage, IUser<int>, int> _subject = default!;
+    private StateParameterValueResolver<Message, User> _subject = default!;
 
     [SetUp]
     public void Setup()
     {
-        _subject = new StateParameterValueResolver<IMessage, IUser<int>, int>();
+        _subject = new StateParameterValueResolver<Message, User>();
     }
 
     [Test]
@@ -58,8 +57,8 @@ public class StateParameterValueResolverTests
     // ReSharper disable once ClassNeverInstantiated.Local
     private class StateB : IState { }
 
-    private static MessageContext<IMessage, IUser<int>, int> CreateContext(IState state)
-        => new MessageContext<IMessage, IUser<int>, int>(null!, null!, null!)
+    private static MessageContext<Message, User> CreateContext(IState state)
+        => new MessageContext<Message, User>(null!, null!, null!)
         {
             UserState = new UserState(state, DateTime.UtcNow, new Dictionary<string, string?>())
         };
