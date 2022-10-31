@@ -9,9 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chabot.UnitTests", "Chabot.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.InMemoryState", "Chabot.InMemoryState\Chabot.InMemoryState.csproj", "{544135EA-36B2-467C-9ADA-2CBD867F29EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.KafkaProxy", "Chabot.KafkaProxy\Chabot.KafkaProxy.csproj", "{4F14A832-8FB6-4CF6-9032-32777E8F7395}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Telegram", "Chabot.Telegram\Chabot.Telegram.csproj", "{DC15C8F0-0F20-4540-9C7B-25346D208F48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Example", "Chabot.Example\Chabot.Example.csproj", "{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Proxy.RabbitMq", "Chabot.Proxy.RabbitMq\Chabot.Proxy.RabbitMq.csproj", "{CFF213F8-B9F5-4111-8601-36455BF3E801}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Proxy.Listener", "Chabot.Sample.Proxy.Listener\Chabot.Sample.Proxy.Listener.csproj", "{13BF9C96-B7A6-449D-893B-327909A51228}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Proxy.Worker", "Chabot.Sample.Proxy.Worker\Chabot.Sample.Proxy.Worker.csproj", "{A395B6F2-E264-45C0-A48B-561BA26B1E96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +37,26 @@ Global
 		{544135EA-36B2-467C-9ADA-2CBD867F29EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{544135EA-36B2-467C-9ADA-2CBD867F29EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{544135EA-36B2-467C-9ADA-2CBD867F29EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F14A832-8FB6-4CF6-9032-32777E8F7395}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC15C8F0-0F20-4540-9C7B-25346D208F48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFF213F8-B9F5-4111-8601-36455BF3E801}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFF213F8-B9F5-4111-8601-36455BF3E801}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFF213F8-B9F5-4111-8601-36455BF3E801}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFF213F8-B9F5-4111-8601-36455BF3E801}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13BF9C96-B7A6-449D-893B-327909A51228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13BF9C96-B7A6-449D-893B-327909A51228}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13BF9C96-B7A6-449D-893B-327909A51228}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13BF9C96-B7A6-449D-893B-327909A51228}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A395B6F2-E264-45C0-A48B-561BA26B1E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A395B6F2-E264-45C0-A48B-561BA26B1E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A395B6F2-E264-45C0-A48B-561BA26B1E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A395B6F2-E264-45C0-A48B-561BA26B1E96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
