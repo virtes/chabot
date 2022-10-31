@@ -11,7 +11,6 @@
     <ItemGroup>
         <PackageReference Include="Chabot" Version="1.0.4" />
         <PackageReference Include="Chabot.InMemoryState" Version="1.0.4" />
-        <PackageReference Include="Chabot.Proxy.RabbitMq" Version="1.0.4" />
         <PackageReference Include="Chabot.Telegram" Version="1.0.4" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
         <PackageReference Include="Serilog" Version="2.12.0" />

@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.InMemoryState", "Cha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Telegram", "Chabot.Telegram\Chabot.Telegram.csproj", "{DC15C8F0-0F20-4540-9C7B-25346D208F48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Example", "Chabot.Example\Chabot.Example.csproj", "{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Telegram", "Chabot.Sample.Telegram\Chabot.Sample.Telegram.csproj", "{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Proxy.RabbitMq", "Chabot.Proxy.RabbitMq\Chabot.Proxy.RabbitMq.csproj", "{CFF213F8-B9F5-4111-8601-36455BF3E801}"
 EndProject
