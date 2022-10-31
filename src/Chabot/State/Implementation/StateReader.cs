@@ -2,21 +2,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Chabot.State.Implementation;
 
-public class StateReader<TUserId, TSerializedState> : IStateReader<TUserId>
+public class StateReader<TMessage, TUser, TSerializedState> : IStateReader<TMessage, TUser>
 {
-    private readonly ILogger<StateReader<TUserId, TSerializedState>> _logger;
-    private readonly IStateStorage<TUserId, TSerializedState> _stateStorage;
+    private readonly ILogger<StateReader<TMessage, TUser, TSerializedState>> _logger;
+    private readonly IStateStorage<TMessage, TUser, TSerializedState> _stateStorage;
     private readonly IStateSerializer<TSerializedState> _stateSerializer;
-    private readonly IDefaultStateFactory<TUserId> _defaultStateFactory;
+    private readonly IDefaultStateFactory<TMessage, TUser> _defaultStateFactory;
 
     // ReSharper disable once StaticMemberInGenericType
     private static readonly IReadOnlyDictionary<string, string?> EmptyDictionary
         = new Dictionary<string, string?>();
 
-    public StateReader(ILogger<StateReader<TUserId, TSerializedState>> logger,
-        IStateStorage<TUserId, TSerializedState> stateStorage,
+    public StateReader(ILogger<StateReader<TMessage, TUser, TSerializedState>> logger,
+        IStateStorage<TMessage, TUser, TSerializedState> stateStorage,
         IStateSerializer<TSerializedState> stateSerializer,
-        IDefaultStateFactory<TUserId> defaultStateFactory)
+        IDefaultStateFactory<TMessage, TUser> defaultStateFactory)
     {
         _logger = logger;
         _stateStorage = stateStorage;
@@ -24,16 +24,16 @@ public class StateReader<TUserId, TSerializedState> : IStateReader<TUserId>
         _defaultStateFactory = defaultStateFactory;
     }
     
-    public async Task<UserState> ReadState(TUserId userId)
+    public async Task<UserState> ReadState(TMessage message, TUser user)
     {
         UserState userState;
         
-        var serializedState = await _stateStorage.ReadState(userId);
+        var serializedState = await _stateStorage.ReadState(message, user);
         if (serializedState is null)
         {
-            _logger.LogDebug("User {UserId} storage state is null, using default state", userId);
+            _logger.LogDebug("User storage state is null, using default state");
 
-            var defaultState = _defaultStateFactory.CreateDefaultState(userId);
+            var defaultState = _defaultStateFactory.CreateDefaultState(message, user);
             userState = new UserState(defaultState, DateTime.UtcNow, EmptyDictionary);
         }
         else
@@ -41,7 +41,7 @@ public class StateReader<TUserId, TSerializedState> : IStateReader<TUserId>
             userState = _stateSerializer.DeserializeState(serializedState);
         }
         
-        _logger.LogDebug("User {UserId} state read {@UserState}", userId, userState);
+        _logger.LogDebug("User state read {@UserState}", userState);
 
         return userState;
     }

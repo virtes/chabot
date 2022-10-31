@@ -1,8 +1,8 @@
 namespace Chabot.State.Implementation;
 
-public class DefaultStateFactory<TUserId> : IDefaultStateFactory<TUserId>
+public class DefaultStateFactory<TMessage, TUser> : IDefaultStateFactory<TMessage, TUser>
 {
-    public IState CreateDefaultState(TUserId userId)
+    public IState CreateDefaultState(TMessage message, TUser user)
     {
         return DefaultState.Instance;
     }

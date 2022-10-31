@@ -2,7 +2,6 @@ using System.ComponentModel;
 using Chabot.Configuration.Exceptions;
 using Chabot.Message;
 using Chabot.Message.Implementation;
-using Chabot.User;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -32,9 +31,7 @@ public class ChabotBuilder
     }
 }
 
-public class ChabotBuilder<TMessage, TUser, TUserId> : ChabotBuilder
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public class ChabotBuilder<TMessage, TUser> : ChabotBuilder
 {
     public ChabotBuilder(IServiceCollection services)
         : base(services)
@@ -42,15 +39,16 @@ public class ChabotBuilder<TMessage, TUser, TUserId> : ChabotBuilder
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public List<Func<HandleMessage<TMessage, TUser, TUserId>, HandleMessage<TMessage, TUser, TUserId>>> HandlingPipeline { get; } = new ();
+    public List<Func<HandleMessage<TMessage, TUser>,
+        HandleMessage<TMessage, TUser>>> HandlingPipeline { get; } = new ();
 
     internal void RegisterChabot()
     {
         var handleMessageEntrypoint = BuildHandleMessageEntrypoint();
         Services.AddSingleton(handleMessageEntrypoint);
 
-        Services.TryAddSingleton<IMessageHandler<TMessage, TUser, TUserId>,
-            ScopedPipelineMessageHandler<TMessage, TUser, TUserId>>();
+        Services.TryAddSingleton<IMessageHandler<TMessage, TUser>,
+            ScopedPipelineMessageHandler<TMessage, TUser>>();
 
         ValidateServices();
     }
@@ -81,16 +79,16 @@ public class ChabotBuilder<TMessage, TUser, TUserId> : ChabotBuilder
         }
     }
 
-    public ChabotBuilder<TMessage, TUser, TUserId> Use(
-        Func<HandleMessage<TMessage, TUser, TUserId>, HandleMessage<TMessage, TUser, TUserId>> use)
+    public ChabotBuilder<TMessage, TUser> Use(
+        Func<HandleMessage<TMessage, TUser>, HandleMessage<TMessage, TUser>> use)
     {
         HandlingPipeline.Add(use);
 
         return this;
     }
 
-    public ChabotBuilder<TMessage, TUser, TUserId> UseMiddleware(
-        IMiddleware<TMessage, TUser, TUserId> middleware)
+    public ChabotBuilder<TMessage, TUser> UseMiddleware(
+        IMiddleware<TMessage, TUser> middleware)
     {
         return Use(next =>
         {
@@ -101,9 +99,11 @@ public class ChabotBuilder<TMessage, TUser, TUserId> : ChabotBuilder
         });
     }
 
-    public ChabotBuilder<TMessage, TUser, TUserId> UseMiddleware<TMiddleware>()
-        where TMiddleware : IMiddleware<TMessage, TUser, TUserId>
+    public ChabotBuilder<TMessage, TUser> UseMiddleware<TMiddleware>()
+        where TMiddleware : class, IMiddleware<TMessage, TUser>
     {
+        Services.TryAddSingleton<TMiddleware>();
+
         return Use(next =>
         {
             return async context =>
@@ -115,9 +115,9 @@ public class ChabotBuilder<TMessage, TUser, TUserId> : ChabotBuilder
         });
     }
 
-    private HandleMessage<TMessage, TUser, TUserId> BuildHandleMessageEntrypoint()
+    private HandleMessage<TMessage, TUser> BuildHandleMessageEntrypoint()
     {
-        HandleMessage<TMessage, TUser, TUserId> entrypoint = _ => Task.CompletedTask;
+        HandleMessage<TMessage, TUser> entrypoint = _ => Task.CompletedTask;
 
         foreach (var middleware in HandlingPipeline.AsEnumerable().Reverse())
         {

@@ -1,11 +1,7 @@
-using Chabot.User;
-
 namespace Chabot.Message;
 
-public interface IMiddleware<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public interface IMiddleware<TMessage, TUser>
 {
-    Task Invoke(MessageContext<TMessage, TUser, TUserId> messageContext, 
-        HandleMessage<TMessage, TUser, TUserId> next);
+    Task Invoke(MessageContext<TMessage, TUser> messageContext,
+        HandleMessage<TMessage, TUser> next);
 }

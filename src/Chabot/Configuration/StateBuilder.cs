@@ -1,28 +1,24 @@
 using System.Reflection;
-using Chabot.Message;
 using Chabot.State.Configuration;
-using Chabot.User;
 using Microsoft.Extensions.Options;
 
 namespace Chabot.Configuration;
 
-public class StateBuilder<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public class StateBuilder<TMessage, TUser>
 {
     internal readonly OptionsBuilder<StateOptions> OptionsBuilder;
 
-    public ChabotBuilder<TMessage, TUser, TUserId> ChabotBuilder { get; }
+    public ChabotBuilder<TMessage, TUser> ChabotBuilder { get; }
 
     public StateBuilder(
-        ChabotBuilder<TMessage, TUser, TUserId> chabotBuilder,
+        ChabotBuilder<TMessage, TUser> chabotBuilder,
         OptionsBuilder<StateOptions> optionsBuilder)
     {
         OptionsBuilder = optionsBuilder;
         ChabotBuilder = chabotBuilder;
     }
 
-    public StateBuilder<TMessage, TUser, TUserId> ScanStateTypes(params Assembly[] assemblies)
+    public StateBuilder<TMessage, TUser> ScanStateTypes(params Assembly[] assemblies)
     {
         foreach (var assembly in assemblies)
         {
@@ -33,12 +29,10 @@ public class StateBuilder<TMessage, TUser, TUserId>
     }
 }
 
-public class StateBuilder<TMessage, TUser, TUserId, TSerializedState>
-    : StateBuilder<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public class StateBuilder<TMessage, TUser, TSerializedState>
+    : StateBuilder<TMessage, TUser>
 {
-    public StateBuilder(ChabotBuilder<TMessage, TUser, TUserId> chabotBuilder,
+    public StateBuilder(ChabotBuilder<TMessage, TUser> chabotBuilder,
         OptionsBuilder<StateOptions> optionsBuilder)
         : base(chabotBuilder, optionsBuilder)
     {

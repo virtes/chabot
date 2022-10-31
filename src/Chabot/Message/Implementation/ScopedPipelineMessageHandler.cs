@@ -1,23 +1,20 @@
 using System.Diagnostics;
-using Chabot.User;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Chabot.Message.Implementation;
 
-public class ScopedPipelineMessageHandler<TMessage, TUser, TUserId> 
-    : IMessageHandler<TMessage, TUser, TUserId>
-    where TUser : IUser<TUserId>
-    where TMessage : IMessage
+public class ScopedPipelineMessageHandler<TMessage, TUser>
+    : IMessageHandler<TMessage, TUser>
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly ILogger<ScopedPipelineMessageHandler<TMessage, TUser, TUserId>> _logger;
-    private readonly HandleMessage<TMessage, TUser, TUserId> _handleMessage;
+    private readonly ILogger<ScopedPipelineMessageHandler<TMessage, TUser>> _logger;
+    private readonly HandleMessage<TMessage, TUser> _handleMessage;
 
     public ScopedPipelineMessageHandler(
         IServiceScopeFactory serviceScopeFactory,
-        ILogger<ScopedPipelineMessageHandler<TMessage, TUser, TUserId>> logger,
-        HandleMessage<TMessage, TUser, TUserId> handleMessage)
+        ILogger<ScopedPipelineMessageHandler<TMessage, TUser>> logger,
+        HandleMessage<TMessage, TUser> handleMessage)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _logger = logger;
@@ -32,18 +29,17 @@ public class ScopedPipelineMessageHandler<TMessage, TUser, TUserId>
         try
         {
             var sw = Stopwatch.StartNew();
-            _logger.LogTrace("Handling message from {UserId}", user.Id);
+            _logger.LogTrace("Handling message");
 
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
 
-            var messageContext = new MessageContext<TMessage, TUser, TUserId>(
+            var messageContext = new MessageContext<TMessage, TUser>(
                 services: scope.ServiceProvider,
                 message: message,
                 user: user);
             await _handleMessage(messageContext);
             
-            _logger.LogInformation("Message from {UserId} user handled in {ElapsedMs} ms",
-                user.Id, sw.ElapsedMilliseconds);
+            _logger.LogInformation("Message handled in {ElapsedMs} ms", sw.ElapsedMilliseconds);
         }
         catch (Exception e)
         {

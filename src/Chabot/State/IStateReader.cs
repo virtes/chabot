@@ -1,6 +1,6 @@
 namespace Chabot.State;
 
-public interface IStateReader<in TUserId>
+public interface IStateReader<in TMessage, in TUser>
 {
-    Task<UserState> ReadState(TUserId userId);
+    Task<UserState> ReadState(TMessage message, TUser user);
 }

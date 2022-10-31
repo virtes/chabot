@@ -15,11 +15,9 @@ namespace Chabot;
 
 public static partial class ChabotBuilderExtensions
 {
-    public static ChabotBuilder<TMessage, TUser, TUserId> UseCommands<TMessage, TUser, TUserId>(
-        this ChabotBuilder<TMessage, TUser, TUserId>  chabotBuilder,
+    public static ChabotBuilder<TMessage, TUser> UseCommands<TMessage, TUser>(
+        this ChabotBuilder<TMessage, TUser>  chabotBuilder,
         params Assembly[] assembliesToScan)
-        where TMessage : IMessage
-        where TUser : IUser<TUserId>
     {
         if (assembliesToScan.Length == 0)
         {
@@ -34,38 +32,41 @@ public static partial class ChabotBuilderExtensions
         foreach (var assembly in assembliesToScan)
         {
             chabotBuilder.Services.Configure<CommandsOptions>(o => o.AssembliesToScan.Add(assembly));
-            RegisterCommandGroups<TMessage, TUser, TUserId>(chabotBuilder.Services, assembly);
+            RegisterCommandGroups<TMessage, TUser>(chabotBuilder.Services, assembly);
         }
 
-        chabotBuilder.Services.TryAddSingleton<IMessageActionProvider<TMessage, TUser, TUserId>,
-            MessageActionProvider<TMessage, TUser, TUserId> >();
-        chabotBuilder.Services.TryAddSingleton<ICommandMessageActionBuilder<TMessage, TUser, TUserId>,
-            CommandMessageActionBuilder<TMessage, TUser, TUserId>>();
+        chabotBuilder.Services.TryAddSingleton<IMessageActionProvider<TMessage, TUser>,
+            MessageActionProvider<TMessage, TUser>>();
+        chabotBuilder.Services.TryAddSingleton<ICommandMessageActionBuilder<TMessage, TUser>,
+            CommandMessageActionBuilder<TMessage, TUser>>();
         chabotBuilder.Services.TryAddSingleton<ICommandDescriptorSelector, CommandDescriptorSelector>();
         chabotBuilder.Services.TryAddSingleton<ICommandDescriptorsProvider, CommandDescriptorsProvider>();
 
-        chabotBuilder.Services.AddSingleton<CommandActionInvokerMiddleware<TMessage, TUser, TUserId>>();
-        chabotBuilder.UseMiddleware<CommandActionInvokerMiddleware<TMessage, TUser, TUserId>>();
+        chabotBuilder.Services.AddSingleton<CommandActionInvokerMiddleware<TMessage, TUser>>();
+        chabotBuilder.UseMiddleware<CommandActionInvokerMiddleware<TMessage, TUser>>();
 
-        chabotBuilder.ValidateServiceRegistration<IActionSelectionMetadataFactory<TMessage, TUser, TUserId>>(
+        chabotBuilder.ValidateServiceRegistration<IActionSelectionMetadataFactory<TMessage, TUser>>(
             "Action selection metadata factory");
 
         chabotBuilder.Services.AddHostedService<CommandsValidatorHostedService>();
 
-        chabotBuilder.Services.AddSingleton<ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>,
-            CommandTextParameterValueResolverFactory<TMessage, TUser, TUserId>>();
-        chabotBuilder.Services.AddSingleton<ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>,
-            UserIdParameterValueResolverFactory<TMessage, TUser, TUserId>>();
+        chabotBuilder.ValidateServiceRegistration<IMessageTextResolver<TMessage>>(
+            "Message text resolver");
+        chabotBuilder.ValidateServiceRegistration<IUserIdResolver<TMessage, TUser>>(
+            "User ID resolver");
+
+        chabotBuilder.Services.AddSingleton<ICommandParameterValueResolverFactory<TMessage, TUser>,
+            CommandTextParameterValueResolverFactory<TMessage, TUser>>();
+        chabotBuilder.Services.AddSingleton<ICommandParameterValueResolverFactory<TMessage, TUser>,
+            UserIdParameterValueResolverFactory<TMessage, TUser>>();
 
         return chabotBuilder;
     }
 
-    private static void RegisterCommandGroups<TMessage, TUser, TUserId>(
+    private static void RegisterCommandGroups<TMessage, TUser>(
         IServiceCollection services, Assembly assembly)
-        where TMessage : IMessage
-        where TUser : IUser<TUserId>
     {
-        var commandGroupBaseType = typeof(CommandGroupBase<TMessage, TUser, TUserId>);
+        var commandGroupBaseType = typeof(CommandGroupBase<TMessage, TUser>);
         var commandGroupTypes = assembly.GetTypes()
             .Where(t => !t.IsAbstract
                         && t.IsClass

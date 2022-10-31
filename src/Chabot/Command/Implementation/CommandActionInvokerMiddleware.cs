@@ -1,33 +1,29 @@
 using Chabot.Message;
-using Chabot.User;
 using Microsoft.Extensions.Logging;
 
 namespace Chabot.Command.Implementation;
 
-public class CommandActionInvokerMiddleware<TMessage, TUser, TUserId> 
-    : IMiddleware<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public class CommandActionInvokerMiddleware<TMessage, TUser>
+    : IMiddleware<TMessage, TUser>
 {
-    private readonly IActionSelectionMetadataFactory<TMessage, TUser, TUserId> 
+    private readonly IActionSelectionMetadataFactory<TMessage, TUser>
         _actionSelectionMetadataFactory;
-    private readonly IMessageActionProvider<TMessage, TUser, TUserId> _messageActionProvider;
+    private readonly IMessageActionProvider<TMessage, TUser> _messageActionProvider;
     private readonly ILogger _logger;
 
     public CommandActionInvokerMiddleware(
-        IActionSelectionMetadataFactory<TMessage, TUser, TUserId> 
-            actionSelectionMetadataFactory,
-        IMessageActionProvider<TMessage, TUser, TUserId> messageActionProvider,
+        IActionSelectionMetadataFactory<TMessage, TUser> actionSelectionMetadataFactory,
+        IMessageActionProvider<TMessage, TUser> messageActionProvider,
         // ReSharper disable once SuggestBaseTypeForParameterInConstructor
-        ILogger<CommandActionInvokerMiddleware<TMessage, TUser, TUserId>> logger)
+        ILogger<CommandActionInvokerMiddleware<TMessage, TUser>> logger)
     {
         _actionSelectionMetadataFactory = actionSelectionMetadataFactory;
         _messageActionProvider = messageActionProvider;
         _logger = logger;
     }
     
-    public async Task Invoke(MessageContext<TMessage, TUser, TUserId> messageContext, 
-        HandleMessage<TMessage, TUser, TUserId> next)
+    public async Task Invoke(MessageContext<TMessage, TUser> messageContext,
+        HandleMessage<TMessage, TUser> next)
     {
         var actionSelectionMetadata = _actionSelectionMetadataFactory.GetMetadata(
             message: messageContext.Message,

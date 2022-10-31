@@ -1,12 +1,7 @@
-using Chabot.Message;
-using Chabot.User;
-
 namespace Chabot.Command;
 
-public interface IMessageActionProvider<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public interface IMessageActionProvider<TMessage, TUser>
 {
-    IMessageAction<TMessage, TUser, TUserId>? GetMessageAction(
+    IMessageAction<TMessage, TUser>? GetMessageAction(
         ActionSelectionMetadata actionSelectionMetadata, Type stateType);
 }

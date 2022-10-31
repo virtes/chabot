@@ -2,18 +2,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Chabot.State.Implementation;
 
-public class StateWriter<TUserId, TSerializedState> : IStateWriter<TUserId>
+public class StateWriter<TMessage, TUser, TSerializedState> : IStateWriter<TMessage, TUser>
 {
-    private readonly ILogger<StateWriter<TUserId, TSerializedState>> _logger;
-    private readonly IStateStorage<TUserId, TSerializedState> _stateStorage;
+    private readonly ILogger<StateWriter<TMessage, TUser, TSerializedState>> _logger;
+    private readonly IStateStorage<TMessage, TUser, TSerializedState> _stateStorage;
     private readonly IStateSerializer<TSerializedState> _stateSerializer;
 
     // ReSharper disable once StaticMemberInGenericType
     private static readonly IReadOnlyDictionary<string, string?> EmptyDictionary
         = new Dictionary<string, string?>();
 
-    public StateWriter(ILogger<StateWriter<TUserId, TSerializedState>> logger,
-        IStateStorage<TUserId, TSerializedState> stateStorage,
+    public StateWriter(ILogger<StateWriter<TMessage, TUser, TSerializedState>> logger,
+        IStateStorage<TMessage, TUser, TSerializedState> stateStorage,
         IStateSerializer<TSerializedState> stateSerializer)
     {
         _logger = logger;
@@ -21,7 +21,7 @@ public class StateWriter<TUserId, TSerializedState> : IStateWriter<TUserId>
         _stateSerializer = stateSerializer;
     }
 
-    public async Task<UserState> WriteState(IState state, TUserId userId)
+    public async Task<UserState> WriteState(IState state, TMessage message, TUser user)
     {
         var userState = new UserState(
             state: state,
@@ -30,9 +30,9 @@ public class StateWriter<TUserId, TSerializedState> : IStateWriter<TUserId>
         
         var serializedState = _stateSerializer.SerializeState(userState);
         
-        await _stateStorage.WriteState(userId, serializedState);
+        await _stateStorage.WriteState(message, user, serializedState);
         
-        _logger.LogDebug("User {UserId} state {@UserState} written", userId, userState);
+        _logger.LogDebug("User state {@UserState} written", userState);
 
         return userState;
     }

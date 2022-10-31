@@ -1,32 +1,29 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using Chabot.Message;
-using Chabot.User;
 
 namespace Chabot.Command.Implementation;
 
-public class CommandMessageActionBuilder<TMessage, TUser, TUserId>
-    : ICommandMessageActionBuilder<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public class CommandMessageActionBuilder<TMessage, TUser>
+    : ICommandMessageActionBuilder<TMessage, TUser>
 {
-    private readonly IEnumerable<ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>>
+    private readonly IEnumerable<ICommandParameterValueResolverFactory<TMessage, TUser>>
         _parameterValueResolverFactories;
 
     public CommandMessageActionBuilder(
-        IEnumerable<ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>>
+        IEnumerable<ICommandParameterValueResolverFactory<TMessage, TUser>>
             parameterValueResolverFactories)
     {
         _parameterValueResolverFactories = parameterValueResolverFactories;
     }
 
-    public Func<CommandGroupBase<TMessage, TUser, TUserId>, MessageContext<TMessage, TUser, TUserId>, Task>
+    public Func<CommandGroupBase<TMessage, TUser>, MessageContext<TMessage, TUser>, Task>
         BuildInvokeCommand(Type type, MethodInfo method)
     {
-        var instanceParameter = Expression.Parameter(typeof(CommandGroupBase<TMessage, TUser, TUserId>), "instance");
+        var instanceParameter = Expression.Parameter(typeof(CommandGroupBase<TMessage, TUser>), "instance");
         var convertToConcreteInstance = Expression.Convert(instanceParameter, type);
 
-        var messageContextParameter = Expression.Parameter(typeof(MessageContext<TMessage, TUser, TUserId>), "messageContext");
+        var messageContextParameter = Expression.Parameter(typeof(MessageContext<TMessage, TUser>), "messageContext");
 
         var variables = new List<ParameterExpression>();
         var expressions = new List<Expression>();
@@ -49,7 +46,7 @@ public class CommandMessageActionBuilder<TMessage, TUser, TUserId>
 
             var resolveParameterValueMethod = valueResolver
                 .GetType()
-                .GetMethod(nameof(ICommandParameterValueResolver<TMessage, TUser, TUserId>.ResolveParameterValue))!;
+                .GetMethod(nameof(ICommandParameterValueResolver<TMessage, TUser>.ResolveParameterValue))!;
 
             var callResolveParameterValue = Expression.Call(
                 Expression.Constant(valueResolver), resolveParameterValueMethod,
@@ -74,12 +71,12 @@ public class CommandMessageActionBuilder<TMessage, TUser, TUserId>
         var block = Expression.Block(variables, expressions);
 
         return Expression
-            .Lambda<Func<CommandGroupBase<TMessage, TUser, TUserId>, MessageContext<TMessage, TUser, TUserId>, Task>>(
+            .Lambda<Func<CommandGroupBase<TMessage, TUser>, MessageContext<TMessage, TUser>, Task>>(
                 block, instanceParameter, messageContextParameter)
             .Compile();
     }
 
-    private ICommandParameterValueResolver<TMessage, TUser, TUserId>?
+    private ICommandParameterValueResolver<TMessage, TUser>?
         GetParameterValueResolver(ParameterInfo parameterInfo)
     {
         foreach (var valueResolverFactory in _parameterValueResolverFactories)

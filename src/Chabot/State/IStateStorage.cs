@@ -1,8 +1,8 @@
 namespace Chabot.State;
 
-public interface IStateStorage<in TUserId, TSerializedState>
+public interface IStateStorage<in TMessage, in TUser, TSerializedState>
 {
-    ValueTask WriteState(TUserId userId, TSerializedState state);
+    ValueTask WriteState(TMessage message, TUser user, TSerializedState state);
 
-    ValueTask<TSerializedState?> ReadState(TUserId userId);
+    ValueTask<TSerializedState?> ReadState(TMessage message, TUser user);
 }

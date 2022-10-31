@@ -101,7 +101,7 @@ public class CommandDescriptorsProvider : ICommandDescriptorsProvider
 
     private static bool IsCommandGroupType(Type type)
     {
-        var commandGroupOpenType = typeof(CommandGroupBase<,,>);
+        var commandGroupOpenType = typeof(CommandGroupBase<,>);
 
         if (!type.IsClass)
             return false;

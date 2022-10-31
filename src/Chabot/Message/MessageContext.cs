@@ -1,11 +1,8 @@
 using Chabot.State;
-using Chabot.User;
 
 namespace Chabot.Message;
 
-public class MessageContext<TMessage, TUser, TUserId>
-    where TUser : IUser<TUserId>
-    where TMessage : IMessage
+public class MessageContext<TMessage, TUser>
 {
     public MessageContext(IServiceProvider services, TMessage message, TUser user)
     {

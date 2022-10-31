@@ -4,14 +4,20 @@ using Chabot.Message;
 
 namespace Chabot.User.Implementation;
 
-public class UserIdParameterValueResolver<TMessage, TUser, TUserId>
-    : ICommandParameterValueResolver<TMessage, TUser, TUserId>
-    where TUser : IUser<TUserId>
-    where TMessage : IMessage
+public class UserIdParameterValueResolver<TMessage, TUser>
+    : ICommandParameterValueResolver<TMessage, TUser>
 {
-    public object? ResolveParameterValue(ParameterInfo parameterInfo,
-        MessageContext<TMessage, TUser, TUserId> messageContext)
+    private readonly IUserIdResolver<TMessage, TUser> _userIdResolver;
+
+    public UserIdParameterValueResolver(
+        IUserIdResolver<TMessage, TUser> userIdResolver)
     {
-        return messageContext.User.Id;
+        _userIdResolver = userIdResolver;
+    }
+
+    public object? ResolveParameterValue(ParameterInfo parameterInfo,
+        MessageContext<TMessage, TUser> messageContext)
+    {
+        return _userIdResolver.GetUserId(messageContext.Message, messageContext.User);
     }
 }

@@ -1,5 +1,3 @@
-using Chabot.State.Implementation;
-
 namespace Chabot.State;
 
 public interface IStateSerializer<TSerializedState>

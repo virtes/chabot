@@ -1,21 +1,17 @@
 using System.Reflection;
 using Chabot.Command;
-using Chabot.Message;
-using Chabot.User;
 
 namespace Chabot.State.Implementation;
 
-public class StateParameterValueResolverFactory<TMessage, TUser, TUserId>
-    : ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public class StateParameterValueResolverFactory<TMessage, TUser>
+    : ICommandParameterValueResolverFactory<TMessage, TUser>
 {
-    public ICommandParameterValueResolver<TMessage, TUser, TUserId>?
+    public ICommandParameterValueResolver<TMessage, TUser>?
         CreateValueResolver(ParameterInfo parameterInfo)
     {
         if (!parameterInfo.ParameterType.IsAssignableTo(typeof(IState)))
             return null;
 
-        return new StateParameterValueResolver<TMessage, TUser, TUserId>();
+        return new StateParameterValueResolver<TMessage, TUser>();
     }
 }

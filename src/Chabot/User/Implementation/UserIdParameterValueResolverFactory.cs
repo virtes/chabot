@@ -1,23 +1,24 @@
 using System.Reflection;
 using Chabot.Command;
-using Chabot.Message;
 
 namespace Chabot.User.Implementation;
 
-public class UserIdParameterValueResolverFactory<TMessage, TUser, TUserId>
-    : ICommandParameterValueResolverFactory<TMessage, TUser, TUserId>
-    where TUser : IUser<TUserId>
-    where TMessage : IMessage
+public class UserIdParameterValueResolverFactory<TMessage, TUser>
+    : ICommandParameterValueResolverFactory<TMessage, TUser>
 {
-    public ICommandParameterValueResolver<TMessage, TUser, TUserId>?
+    private readonly IUserIdResolver<TMessage, TUser> _userIdResolver;
+
+    public UserIdParameterValueResolverFactory(
+        IUserIdResolver<TMessage, TUser> userIdResolver)
+    {
+        _userIdResolver = userIdResolver;
+    }
+    public ICommandParameterValueResolver<TMessage, TUser>?
         CreateValueResolver(ParameterInfo parameterInfo)
     {
         if (parameterInfo.GetCustomAttribute<FromUserIdAttribute>() == null)
             return null;
 
-        if (parameterInfo.ParameterType != typeof(TUserId))
-            return null;
-
-        return new UserIdParameterValueResolver<TMessage, TUser, TUserId>();
+        return new UserIdParameterValueResolver<TMessage, TUser>(_userIdResolver);
     }
 }

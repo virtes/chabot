@@ -1,26 +1,22 @@
 using System.Collections.Concurrent;
 using System.Reflection;
-using Chabot.Message;
-using Chabot.User;
 using Microsoft.Extensions.Logging;
 
 namespace Chabot.Command.Implementation;
 
-public class MessageActionProvider<TMessage, TUser, TUserId>
-    : IMessageActionProvider<TMessage, TUser, TUserId> 
-    where TMessage : IMessage
-    where TUser : IUser<TUserId> 
+public class MessageActionProvider<TMessage, TUser>
+    : IMessageActionProvider<TMessage, TUser>
 {
-    private readonly ILogger<MessageActionProvider<TMessage, TUser, TUserId>> _logger;
-    private readonly ICommandMessageActionBuilder<TMessage, TUser, TUserId> _commandMessageActionBuilder;
+    private readonly ILogger<MessageActionProvider<TMessage, TUser>> _logger;
+    private readonly ICommandMessageActionBuilder<TMessage, TUser> _commandMessageActionBuilder;
     private readonly ICommandDescriptorSelector _commandDescriptorSelector;
 
     private readonly ConcurrentDictionary<CommandMessageActionKey,
-        IMessageAction<TMessage, TUser, TUserId>> _messageActions = new();
+        IMessageAction<TMessage, TUser>> _messageActions = new();
 
     public MessageActionProvider(
-        ILogger<MessageActionProvider<TMessage, TUser, TUserId>> logger,
-        ICommandMessageActionBuilder<TMessage, TUser, TUserId> commandMessageActionBuilder,
+        ILogger<MessageActionProvider<TMessage, TUser>> logger,
+        ICommandMessageActionBuilder<TMessage, TUser> commandMessageActionBuilder,
         ICommandDescriptorSelector commandDescriptorSelector)
     {
         _logger = logger;
@@ -28,7 +24,7 @@ public class MessageActionProvider<TMessage, TUser, TUserId>
         _commandDescriptorSelector = commandDescriptorSelector;
     }
     
-    public IMessageAction<TMessage, TUser, TUserId>? GetMessageAction(
+    public IMessageAction<TMessage, TUser>? GetMessageAction(
         ActionSelectionMetadata actionSelectionMetadata, Type stateType)
     {
         var commandDescriptor = _commandDescriptorSelector.GetCommandDescriptor(
@@ -44,7 +40,7 @@ public class MessageActionProvider<TMessage, TUser, TUserId>
         return GetCommandMessageAction(commandDescriptor);
     }
 
-    private IMessageAction<TMessage, TUser, TUserId> GetCommandMessageAction(
+    private IMessageAction<TMessage, TUser> GetCommandMessageAction(
         CommandDescriptor commandDescriptor)
     {
         var key = new CommandMessageActionKey(
@@ -56,7 +52,7 @@ public class MessageActionProvider<TMessage, TUser, TUserId>
             {
                 var action = _commandMessageActionBuilder.BuildInvokeCommand(
                     k.Type, k.Method);
-                return new InvokeCommandMessageAction<TMessage, TUser, TUserId>(k.Type, action);
+                return new InvokeCommandMessageAction<TMessage, TUser>(k.Type, action);
             });
     }
     

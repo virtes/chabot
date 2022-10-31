@@ -1,6 +1,6 @@
 namespace Chabot.State;
 
-public interface IDefaultStateFactory<in TUserId>
+public interface IDefaultStateFactory<in TMessage, in TUser>
 {
-    public IState CreateDefaultState(TUserId userId);
+    public IState CreateDefaultState(TMessage message, TUser user);
 }

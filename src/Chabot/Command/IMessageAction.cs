@@ -1,11 +1,8 @@
 using Chabot.Message;
-using Chabot.User;
 
 namespace Chabot.Command;
 
-public interface IMessageAction<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId>
+public interface IMessageAction<TMessage, TUser>
 {
-    Task Execute(MessageContext<TMessage, TUser, TUserId> messageContext);
+    Task Execute(MessageContext<TMessage, TUser> messageContext);
 }

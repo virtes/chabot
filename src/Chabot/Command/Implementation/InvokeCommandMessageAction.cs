@@ -1,27 +1,24 @@
 using Chabot.Message;
-using Chabot.User;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Chabot.Command.Implementation;
 
-public class InvokeCommandMessageAction<TMessage, TUser, TUserId>
-    : IMessageAction<TMessage, TUser, TUserId>
-    where TMessage : IMessage
-    where TUser : IUser<TUserId> 
+public class InvokeCommandMessageAction<TMessage, TUser>
+    : IMessageAction<TMessage, TUser>
 {
     private readonly Type _commandGroupType;
-    private readonly Func<CommandGroupBase<TMessage, TUser, TUserId>, MessageContext<TMessage, TUser, TUserId>, Task> _action;
+    private readonly Func<CommandGroupBase<TMessage, TUser>, MessageContext<TMessage, TUser>, Task> _action;
 
     public InvokeCommandMessageAction(Type commandGroupType, 
-        Func<CommandGroupBase<TMessage, TUser, TUserId>, MessageContext<TMessage, TUser, TUserId>, Task> action)
+        Func<CommandGroupBase<TMessage, TUser>, MessageContext<TMessage, TUser>, Task> action)
     {
         _commandGroupType = commandGroupType;
         _action = action;
     }
     
-    public async Task Execute(MessageContext<TMessage, TUser, TUserId> messageContext)
+    public async Task Execute(MessageContext<TMessage, TUser> messageContext)
     {
-        var instance = (CommandGroupBase<TMessage, TUser, TUserId>)
+        var instance = (CommandGroupBase<TMessage, TUser>)
             messageContext.Services.GetRequiredService(_commandGroupType);
 
         instance.Context = messageContext;
