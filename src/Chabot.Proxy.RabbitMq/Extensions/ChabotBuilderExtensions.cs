@@ -15,12 +15,12 @@ public static class ChabotBuilderExtensions
     public static ChabotBuilder<TMessage, TUser>
         UseRabbitMqListenerProxy<TMessage, TUser>(
             this ChabotBuilder<TMessage, TUser> chabotBuilder,
-            Action<OptionsBuilder<RabbitMqProxyOptions>> configureOptionsBuilder)
+            Action<RabbitMqProxyOptions> configureOptions)
     {
         chabotBuilder.Services.TryAddSingleton<DefaultSendReceive>();
         chabotBuilder.Services.TryAddSingleton<ISendReceive, SendReceiveTraceContextWrapper>();
 
-        AddProxyOptions(chabotBuilder.Services, configureOptionsBuilder);
+        AddProxyOptions(chabotBuilder.Services, configureOptions);
         RegisterEasyNetQ(chabotBuilder.Services);
 
         chabotBuilder.Services.AddScoped<RabbitMqMessageProducerMiddleware<TMessage, TUser>>();
@@ -32,11 +32,11 @@ public static class ChabotBuilderExtensions
     public static ChabotBuilder<TMessage, TUser>
         UseRabbitMqWorkerProxy<TMessage, TUser>(
             this ChabotBuilder<TMessage, TUser> chabotBuilder,
-            Action<OptionsBuilder<RabbitMqProxyOptions>> configureOptionsBuilder)
+            Action<RabbitMqProxyOptions> configureOptions)
     {
         chabotBuilder.Services.TryAddSingleton<IHandlerRunner, TraceContextExtractorHandlerRunner>();
 
-        AddProxyOptions(chabotBuilder.Services, configureOptionsBuilder);
+        AddProxyOptions(chabotBuilder.Services, configureOptions);
         RegisterEasyNetQ(chabotBuilder.Services);
 
         chabotBuilder.Services.AddHostedService<ReceiveMessagesQueueHostedService<TMessage, TUser>>();
@@ -45,12 +45,13 @@ public static class ChabotBuilderExtensions
     }
 
     private static void AddProxyOptions(IServiceCollection services,
-        Action<OptionsBuilder<RabbitMqProxyOptions>> configureOptionsBuilder)
+        Action<RabbitMqProxyOptions> configureOptions)
     {
-        var optionsBuilder = services
+        services
             .AddOptions<RabbitMqProxyOptions>()
-            .ValidateDataAnnotations();
-        configureOptionsBuilder(optionsBuilder);
+            .Configure(configureOptions)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 
     private static void RegisterEasyNetQ(IServiceCollection services)
