@@ -1,6 +1,9 @@
+using JetBrains.Annotations;
+
 namespace Chabot.Command;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+[MeansImplicitUse]
 public class CommandAttribute : Attribute
 {
     public CommandAttribute(params string[] commandTexts)
