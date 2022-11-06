@@ -6,7 +6,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TelegramMessage = Telegram.Bot.Types.Message;
+using TelegramUpdate = Telegram.Bot.Types.Update;
 using TelegramUser = Telegram.Bot.Types.User;
 
 namespace Chabot.Telegram.Implementation;
@@ -15,12 +15,12 @@ public class TelegramListenerHostedService : IHostedService
 {
     private readonly ITelegramBotClientProvider _telegramBotClientProvider;
     private readonly ILogger<TelegramListenerHostedService> _logger;
-    private readonly IMessageHandler<TelegramMessage, TelegramUser> _messageHandler;
+    private readonly IMessageHandler<TelegramUpdate, TelegramUser> _messageHandler;
 
     public TelegramListenerHostedService(
         ITelegramBotClientProvider telegramBotClientProvider,
         ILogger<TelegramListenerHostedService> logger,
-        IMessageHandler<TelegramMessage, TelegramUser> messageHandler)
+        IMessageHandler<TelegramUpdate, TelegramUser> messageHandler)
     {
         _telegramBotClientProvider = telegramBotClientProvider;
         _logger = logger;
@@ -42,34 +42,37 @@ public class TelegramListenerHostedService : IHostedService
         return Task.CompletedTask;
     }
 
-    private async Task UpdateHandler(ITelegramBotClient telegramBotClient, Update update, CancellationToken cancellationToken)
+    private async Task UpdateHandler(ITelegramBotClient telegramBotClient,
+        Update update, CancellationToken cancellationToken)
     {
         using var activity = new Activity("Handle telegram message");
         activity.Start();
 
         _logger.LogTrace("Received telegram update {@Update}", update);
 
-        if (update.Type != UpdateType.Message)
+        if (update.Type is not (UpdateType.Message or UpdateType.CallbackQuery))
         {
             _logger.LogInformation("Telegram update skipped (update type is {UpdateType})", update.Type);
             return;
         }
 
-        if (update.Message is null)
+        var user = update.Type switch
         {
-            _logger.LogWarning("Telegram update skipped (message is null)");
-            return;
-        }
+            UpdateType.Message => update.Message?.From,
+            UpdateType.CallbackQuery => update.CallbackQuery?.From,
+            _ => throw new ArgumentOutOfRangeException(nameof(update.Type),
+                update.Type, "Update type not supported")
+        };
 
-        if (update.Message.From is null)
+        if (user is null)
         {
-            _logger.LogWarning("Telegram update skipped (from is null)");
+            _logger.LogWarning("Telegram update skipped (user is null, {@Update})", update);
             return;
         }
 
         try
         {
-            await _messageHandler.HandleMessage(update.Message, update.Message.From);
+            await _messageHandler.HandleMessage(update, user);
         }
         catch (Exception e)
         {

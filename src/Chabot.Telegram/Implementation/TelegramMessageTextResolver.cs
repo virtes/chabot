@@ -1,12 +1,12 @@
 using Chabot.Message;
-using TelegramMessage = Telegram.Bot.Types.Message;
+using TelegramUpdate = Telegram.Bot.Types.Update;
 
 namespace Chabot.Telegram.Implementation;
 
-public class TelegramMessageTextResolver : IMessageTextResolver<TelegramMessage>
+public class TelegramMessageTextResolver : IMessageTextResolver<TelegramUpdate>
 {
-    public string? GetMessageText(TelegramMessage message)
+    public string? GetMessageText(TelegramUpdate message)
     {
-        return message.Text;
+        return message.Message?.Text ?? message.Message?.Caption;
     }
 }
