@@ -10,7 +10,7 @@ var host = Host.CreateDefaultBuilder(args)
         {
             c.UseTelegramPollingUpdates();
 
-            c.UseRabbitMqListenerProxy(o => o.BindConfiguration("RabbitMqProxyOptions"));
+            c.UseRabbitMqListenerProxy(o => host.Configuration.Bind("RabbitMqProxyOptions", o));
         });
     })
     .UseSerilog((host, _, configuration) => configuration

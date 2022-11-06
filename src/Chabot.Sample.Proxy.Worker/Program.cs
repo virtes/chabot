@@ -9,11 +9,11 @@ var host = Host.CreateDefaultBuilder(args)
     {
         services.AddTelegramChabot((c, _) => c.Token = host.Configuration["TelegramBotOptions:Token"], c =>
         {
-            c.UseRabbitMqWorkerProxy(o => o.BindConfiguration("RabbitMqProxyOptions"));
+            c.UseRabbitMqWorkerProxy(o => host.Configuration.Bind("RabbitMqProxyOptions", o));
 
             c.UseState(s => s
                 .UseSystemTextJsonSerializer()
-                .UseInMemoryStateStorage((_, user) => user.Id));
+                .UseInMemoryStateStorage());
 
             c.UseCommands();
         });

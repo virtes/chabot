@@ -12,7 +12,7 @@ var host = Host.CreateDefaultBuilder(args)
 
             c.UseState(s => s
                 .UseSystemTextJsonSerializer()
-                .UseInMemoryStateStorage((_, user) => user.Id));
+                .UseInMemoryStateStorage());
 
             c.UseCommands();
         });
