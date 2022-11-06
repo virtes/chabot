@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Chabot" Version="1.0.4" />
+      <PackageReference Include="Chabot" Version="1.1.0" />
       <PackageReference Include="EasyNetQ" Version="7.2.1" />
       <PackageReference Include="EasyNetQ.DI.Microsoft" Version="7.2.1" />
       <PackageReference Include="EasyNetQ.Logging.Serilog" Version="7.2.1" />

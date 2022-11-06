@@ -3,6 +3,7 @@ using Chabot.Proxy.RabbitMq.Configuration;
 using Chabot.Proxy.RabbitMq.Implementation;
 using EasyNetQ;
 using EasyNetQ.Consumer;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -12,9 +13,10 @@ namespace Chabot.Proxy.RabbitMq;
 
 public static class ChabotBuilderExtensions
 {
-    public static ChabotBuilder<TMessage, TUser>
-        UseRabbitMqListenerProxy<TMessage, TUser>(
-            this ChabotBuilder<TMessage, TUser> chabotBuilder,
+    [UsedImplicitly]
+    public static ChabotBuilder<TMessage, TUser, TStateTarget>
+        UseRabbitMqListenerProxy<TMessage, TUser, TStateTarget>(
+            this ChabotBuilder<TMessage, TUser, TStateTarget> chabotBuilder,
             Action<RabbitMqProxyOptions> configureOptions)
     {
         chabotBuilder.Services.TryAddSingleton<DefaultSendReceive>();
@@ -29,9 +31,10 @@ public static class ChabotBuilderExtensions
         return chabotBuilder;
     }
 
-    public static ChabotBuilder<TMessage, TUser>
-        UseRabbitMqWorkerProxy<TMessage, TUser>(
-            this ChabotBuilder<TMessage, TUser> chabotBuilder,
+    [UsedImplicitly]
+    public static ChabotBuilder<TMessage, TUser, TStateTarget>
+        UseRabbitMqWorkerProxy<TMessage, TUser, TStateTarget>(
+            this ChabotBuilder<TMessage, TUser, TStateTarget> chabotBuilder,
             Action<RabbitMqProxyOptions> configureOptions)
     {
         chabotBuilder.Services.TryAddSingleton<IHandlerRunner, TraceContextExtractorHandlerRunner>();
