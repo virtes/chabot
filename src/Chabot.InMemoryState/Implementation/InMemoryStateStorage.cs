@@ -3,32 +3,22 @@ using Chabot.State;
 
 namespace Chabot.InMemoryState.Implementation;
 
-public class InMemoryStateStorage<TMessage, TUser, TKey, TSerializedState>
-    : IStateStorage<TMessage, TUser, TSerializedState>
-    where TKey : IEquatable<TKey>
+public class InMemoryStateStorage<TStateTarget, TSerializedState>
+    : IStateStorage<TStateTarget, TSerializedState>
+    where TStateTarget : IEquatable<TStateTarget>
 {
-    private readonly Func<TMessage, TUser, TKey> _keyFactory;
-    private readonly ConcurrentDictionary<TKey, TSerializedState> _stateByUserId = new();
+    private readonly ConcurrentDictionary<TStateTarget, TSerializedState> _states = new();
 
-    public InMemoryStateStorage(Func<TMessage, TUser, TKey> keyFactory)
+    public ValueTask WriteState(TStateTarget stateTarget, TSerializedState state)
     {
-        _keyFactory = keyFactory;
-    }
-
-    public ValueTask WriteState(TMessage message, TUser user, TSerializedState state)
-    {
-        var key = _keyFactory(message, user);
-
-        _stateByUserId.AddOrUpdate(key, state, (_, _) => state);
+        _states.AddOrUpdate(stateTarget, state, (_, _) => state);
         
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask<TSerializedState?> ReadState(TMessage message, TUser user)
+    public ValueTask<TSerializedState?> ReadState(TStateTarget stateTarget)
     {
-        var key = _keyFactory(message, user);
-
-        if (_stateByUserId.TryGetValue(key, out var serializedState))
+        if (_states.TryGetValue(stateTarget, out var serializedState))
             return ValueTask.FromResult<TSerializedState?>(serializedState);
 
         return ValueTask.FromResult<TSerializedState?>(default);

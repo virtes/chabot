@@ -1,6 +1,7 @@
 using Chabot.Command;
 using Chabot.Configuration;
 using Chabot.Message;
+using Chabot.State;
 using Chabot.Telegram.Configuration;
 using Chabot.Telegram.Implementation;
 using Chabot.User;
@@ -16,10 +17,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTelegramChabot(this IServiceCollection services,
         Action<TelegramBotOptions, IServiceProvider> configureBotOptions,
-        Action<ChabotBuilder<TelegramUpdate, TelegramUser>> builderAction)
+        Action<ChabotBuilder<TelegramUpdate, TelegramUser, TelegramStateTarget>> builderAction)
     {
         services
             .AddOptions<TelegramBotOptions>()
+            // ReSharper disable once RedundantTypeArgumentsOfMethod
             .Configure<IServiceProvider>(configureBotOptions)
             .Validate(o => !string.IsNullOrEmpty(o.Token), "Bot Token must be specified");
         
@@ -28,9 +30,11 @@ public static class ServiceCollectionExtensions
             TelegramActionSelectionMetadataFactory>();
         services.TryAddSingleton<IMessageTextResolver<TelegramUpdate>, TelegramMessageTextResolver>();
         services.TryAddSingleton<IUserIdResolver<TelegramUpdate, TelegramUser>, TelegramUserIdResolver>();
+        services.TryAddSingleton<IStateTargetFactory<TelegramUpdate, TelegramUser, TelegramStateTarget>,
+            TelegramStateTargetFactory>();
 
         // ReSharper disable once RedundantTypeArgumentsOfMethod
-        services.AddChabot<TelegramUpdate, TelegramUser>(builderAction);
+        services.AddChabot<TelegramUpdate, TelegramUser, TelegramStateTarget>(builderAction);
 
         return services;
     } 

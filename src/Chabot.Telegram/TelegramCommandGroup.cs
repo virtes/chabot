@@ -1,13 +1,15 @@
 using Chabot.Command;
+using Chabot.State;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using TelegramUpdate = Telegram.Bot.Types.Update;
+using TelegramMessage = Telegram.Bot.Types.Message;
 using TelegramUser = Telegram.Bot.Types.User;
 
 namespace Chabot.Telegram;
 
 public abstract class TelegramCommandGroup
-    : CommandGroupBase<TelegramUpdate, TelegramUser>
+    : CommandGroupBase<TelegramUpdate, TelegramUser, TelegramStateTarget>
 {
     protected long UserId => User.Id;
 
@@ -32,5 +34,15 @@ public abstract class TelegramCommandGroup
             var clientProvider = Context.Services.GetRequiredService<ITelegramBotClientProvider>();
             return clientProvider.GetClient();
         }
+    }
+
+    protected Task SetMessageState(IState state, TelegramMessage message)
+    {
+        var stateTarget = new TelegramStateTarget(
+            userId: UserId,
+            chatId: ChatId,
+            messageId: message.MessageId);
+
+        return SetState(state, stateTarget);
     }
 }

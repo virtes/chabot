@@ -8,15 +8,14 @@ namespace Chabot;
 
 public static class StateBuilderExtensions
 {
-    public static StateBuilder<TMessage, TUser, TSerializedState>
-        UseInMemoryStateStorage<TMessage, TUser, TSerializedState, TKey>(
-        this StateBuilder<TMessage, TUser, TSerializedState> stateBuilder,
-        Func<TMessage, TUser, TKey> keyFactory)
-        where TKey : IEquatable<TKey>
+    public static StateBuilder<TMessage, TUser, TStateTarget, TSerializedState>
+        UseInMemoryStateStorage<TMessage, TUser, TStateTarget, TSerializedState>(
+        this StateBuilder<TMessage, TUser, TStateTarget, TSerializedState> stateBuilder)
+        where TStateTarget : IEquatable<TStateTarget>
     {
         stateBuilder.ChabotBuilder.Services
-            .AddSingleton<IStateStorage<TMessage, TUser, TSerializedState>>(
-                new InMemoryStateStorage<TMessage, TUser, TKey, TSerializedState>(keyFactory));
+            .AddSingleton<IStateStorage<TStateTarget, TSerializedState>,
+                InMemoryStateStorage<TStateTarget, TSerializedState>>();
         
         return stateBuilder;
     }

@@ -9,8 +9,8 @@ namespace Chabot.Telegram;
 
 public static class ChabotBuilderExtensions
 {
-    public static ChabotBuilder<TelegramUpdate, TelegramUser> UseTelegramPollingUpdates(
-        this ChabotBuilder<TelegramUpdate, TelegramUser> chabotBuilder)
+    public static ChabotBuilder<TelegramUpdate, TelegramUser, TelegramStateTarget> UseTelegramPollingUpdates(
+        this ChabotBuilder<TelegramUpdate, TelegramUser, TelegramStateTarget> chabotBuilder)
     {
         chabotBuilder.Services.AddHostedService<TelegramListenerHostedService>();
 
