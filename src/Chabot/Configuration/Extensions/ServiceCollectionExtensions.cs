@@ -5,11 +5,11 @@ namespace Chabot.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddChabot<TMessage, TUser>(
+    public static IServiceCollection AddChabot<TMessage, TUser, TStateTarget>(
         this IServiceCollection services, 
-        Action<ChabotBuilder<TMessage, TUser>> builderAction)
+        Action<ChabotBuilder<TMessage, TUser, TStateTarget>> builderAction)
     {
-        var builder = new ChabotBuilder<TMessage, TUser>(services);
+        var builder = new ChabotBuilder<TMessage, TUser, TStateTarget>(services);
         builderAction(builder);
 
         builder.RegisterChabot();

@@ -1,6 +1,6 @@
 namespace Chabot.State;
 
-public interface IStateWriter<in TMessage, in TUser>
+public interface IStateWriter<in TStateTarget>
 {
-    Task<UserState> WriteState(IState state, TMessage message, TUser user);
+    Task<UserState> WriteState(IState state, TStateTarget stateTarget);
 }

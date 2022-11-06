@@ -2,6 +2,7 @@ using System.ComponentModel;
 using Chabot.Configuration.Exceptions;
 using Chabot.Message;
 using Chabot.Message.Implementation;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -31,7 +32,7 @@ public class ChabotBuilder
     }
 }
 
-public class ChabotBuilder<TMessage, TUser> : ChabotBuilder
+public class ChabotBuilder<TMessage, TUser, TStateTarget> : ChabotBuilder
 {
     public ChabotBuilder(IServiceCollection services)
         : base(services)
@@ -42,6 +43,7 @@ public class ChabotBuilder<TMessage, TUser> : ChabotBuilder
     public List<Func<HandleMessage<TMessage, TUser>,
         HandleMessage<TMessage, TUser>>> HandlingPipeline { get; } = new ();
 
+    [UsedImplicitly]
     internal void RegisterChabot()
     {
         var handleMessageEntrypoint = BuildHandleMessageEntrypoint();
@@ -79,7 +81,7 @@ public class ChabotBuilder<TMessage, TUser> : ChabotBuilder
         }
     }
 
-    public ChabotBuilder<TMessage, TUser> Use(
+    public ChabotBuilder<TMessage, TUser, TStateTarget> Use(
         Func<HandleMessage<TMessage, TUser>, HandleMessage<TMessage, TUser>> use)
     {
         HandlingPipeline.Add(use);
@@ -87,7 +89,8 @@ public class ChabotBuilder<TMessage, TUser> : ChabotBuilder
         return this;
     }
 
-    public ChabotBuilder<TMessage, TUser> UseMiddleware(
+    [UsedImplicitly]
+    public ChabotBuilder<TMessage, TUser, TStateTarget> UseMiddleware(
         IMiddleware<TMessage, TUser> middleware)
     {
         return Use(next =>
@@ -99,7 +102,7 @@ public class ChabotBuilder<TMessage, TUser> : ChabotBuilder
         });
     }
 
-    public ChabotBuilder<TMessage, TUser> UseMiddleware<TMiddleware>()
+    public ChabotBuilder<TMessage, TUser, TStateTarget> UseMiddleware<TMiddleware>()
         where TMiddleware : class, IMiddleware<TMessage, TUser>
     {
         Services.TryAddSingleton<TMiddleware>();

@@ -15,8 +15,8 @@ namespace Chabot;
 
 public static partial class ChabotBuilderExtensions
 {
-    public static ChabotBuilder<TMessage, TUser> UseCommands<TMessage, TUser>(
-        this ChabotBuilder<TMessage, TUser>  chabotBuilder,
+    public static ChabotBuilder<TMessage, TUser, TStateTarget> UseCommands<TMessage, TUser, TStateTarget>(
+        this ChabotBuilder<TMessage, TUser, TStateTarget>  chabotBuilder,
         params Assembly[] assembliesToScan)
     {
         if (assembliesToScan.Length == 0)

@@ -16,18 +16,20 @@ namespace Chabot;
 
 public static partial class ChabotBuilderExtensions
 {
-    public static ChabotBuilder<TMessage, TUser>
-        UseState<TMessage, TUser>(
-            this ChabotBuilder<TMessage, TUser>  chabotBuilder,
-            Action<StateBuilder<TMessage, TUser>> stateBuilderAction)
+    public static ChabotBuilder<TMessage, TUser, TStateTarget>
+        UseState<TMessage, TUser, TStateTarget>(
+            this ChabotBuilder<TMessage, TUser, TStateTarget>  chabotBuilder,
+            Action<StateBuilder<TMessage, TUser, TStateTarget>> stateBuilderAction)
     {
         chabotBuilder.Services.TryAddSingleton<IStateTypeMapping, StateTypeMapping>();
 
-        chabotBuilder.Services.AddScoped<StateExtractorMiddleware<TMessage, TUser>>();
-        chabotBuilder.UseMiddleware<StateExtractorMiddleware<TMessage, TUser>>();
+        chabotBuilder.Services.AddScoped<StateExtractorMiddleware<TMessage, TUser, TStateTarget>>();
+        chabotBuilder.UseMiddleware<StateExtractorMiddleware<TMessage, TUser, TStateTarget>>();
 
-        chabotBuilder.ValidateServiceRegistration<IStateReader<TMessage, TUser>>("State reader");
-        chabotBuilder.ValidateServiceRegistration<IStateWriter<TMessage, TUser>>("State writer");
+        chabotBuilder.ValidateServiceRegistration<IStateTargetFactory<TMessage, TUser, TStateTarget>>(
+            "State target factory");
+        chabotBuilder.ValidateServiceRegistration<IStateReader<TMessage, TUser, TStateTarget>>("State reader");
+        chabotBuilder.ValidateServiceRegistration<IStateWriter<TStateTarget>>("State writer");
 
         chabotBuilder.Services.AddSingleton<ICommandParameterValueResolverFactory<TMessage, TUser>,
             StateParameterValueResolverFactory<TMessage, TUser>>();
@@ -37,7 +39,7 @@ public static partial class ChabotBuilderExtensions
             .Configure(o => o.AssembliesToScanStateTypes.Add(typeof(DefaultState).Assembly))
             .Configure(o => o.AssembliesToScanStateTypes.Add(Assembly.GetEntryAssembly()!));
 
-        var stateBuilder = new StateBuilder<TMessage, TUser>(
+        var stateBuilder = new StateBuilder<TMessage, TUser, TStateTarget>(
             chabotBuilder: chabotBuilder,
             optionsBuilder: stateOptionsBuilder);
         stateBuilderAction(stateBuilder);
@@ -46,40 +48,40 @@ public static partial class ChabotBuilderExtensions
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void AddStateReader<TMessage, TUser, TSerializedState>(
-        this ChabotBuilder<TMessage, TUser>  chabotBuilder)
+    public static void AddStateReader<TMessage, TUser, TStateTarget, TSerializedState>(
+        this ChabotBuilder<TMessage, TUser, TStateTarget>  chabotBuilder)
     {
-        chabotBuilder.Services.TryAddScoped<IStateReader<TMessage, TUser>,
-            StateReader<TMessage, TUser, TSerializedState>>();
+        chabotBuilder.Services.TryAddScoped<IStateReader<TMessage, TUser, TStateTarget>,
+            StateReader<TMessage, TUser, TStateTarget, TSerializedState>>();
         chabotBuilder.Services.TryAddSingleton<IDefaultStateFactory<TMessage, TUser>,
             DefaultStateFactory<TMessage, TUser>>();
 
-        chabotBuilder.ValidateServiceRegistration<IStateStorage<TMessage, TUser, TSerializedState>>(
+        chabotBuilder.ValidateServiceRegistration<IStateStorage<TStateTarget, TSerializedState>>(
             $"{typeof(TSerializedState).FullName} state storage");
         chabotBuilder.ValidateServiceRegistration<IStateSerializer<TSerializedState>>(
             $"{typeof(TSerializedState).FullName} state serializer");
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void AddStateWriter<TMessage, TUser, TSerializedState>(
-        this ChabotBuilder<TMessage, TUser>  chabotBuilder)
+    public static void AddStateWriter<TMessage, TUser, TStateTarget, TSerializedState>(
+        this ChabotBuilder<TMessage, TUser, TStateTarget> chabotBuilder)
     {
-        chabotBuilder.Services.TryAddScoped<IStateWriter<TMessage, TUser>,
-            StateWriter<TMessage, TUser, TSerializedState>>();
+        chabotBuilder.Services.TryAddScoped<IStateWriter<TStateTarget>,
+            StateWriter<TStateTarget, TSerializedState>>();
 
-        chabotBuilder.ValidateServiceRegistration<IStateStorage<TMessage, TUser, TSerializedState>>(
+        chabotBuilder.ValidateServiceRegistration<IStateStorage<TStateTarget, TSerializedState>>(
             $"{typeof(TSerializedState).FullName} state storage");
         chabotBuilder.ValidateServiceRegistration<IStateSerializer<TSerializedState>>(
             $"{typeof(TSerializedState).FullName} state serializer");
     }
 
-    public static StateBuilder<TMessage, TUser, string>
-        UseSystemTextJsonSerializer<TMessage, TUser>(
-        this StateBuilder<TMessage, TUser> stateBuilder,
+    public static StateBuilder<TMessage, TUser, TStateTarget, string>
+        UseSystemTextJsonSerializer<TMessage, TUser, TStateTarget>(
+        this StateBuilder<TMessage, TUser, TStateTarget> stateBuilder,
         JsonSerializerOptions? serializerOptions = null)
     {
-        stateBuilder.ChabotBuilder.AddStateReader<TMessage, TUser, string>();
-        stateBuilder.ChabotBuilder.AddStateWriter<TMessage, TUser, string>();
+        stateBuilder.ChabotBuilder.AddStateReader<TMessage, TUser, TStateTarget, string>();
+        stateBuilder.ChabotBuilder.AddStateWriter<TMessage, TUser, TStateTarget, string>();
 
         stateBuilder.ChabotBuilder.Services
             .AddSingleton<IStateSerializer<string>>(sp =>
@@ -88,7 +90,7 @@ public static partial class ChabotBuilderExtensions
                     logger: sp.GetRequiredService<ILogger<SystemTextJsonStateSerializer>>(),
                     stateTypeMapping: sp.GetRequiredService<IStateTypeMapping>()));
 
-        return new StateBuilder<TMessage, TUser, string>(
+        return new StateBuilder<TMessage, TUser, TStateTarget, string>(
             stateBuilder.ChabotBuilder, stateBuilder.OptionsBuilder);
     }
 }

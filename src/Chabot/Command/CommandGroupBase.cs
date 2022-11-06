@@ -14,10 +14,25 @@ public abstract class CommandGroupBase<TMessage, TUser>
     protected TMessage Message => Context.Message;
 
     protected TUser User => Context.User;
+}
 
+public abstract class CommandGroupBase<TMessage, TUser, TStateTarget>
+    : CommandGroupBase<TMessage, TUser>
+{
     protected async Task SetState(IState state)
-    {   
-        var stateWriter = Context.Services.GetRequiredService<IStateWriter<TMessage, TUser>>();
-        Context.UserState = await stateWriter.WriteState(state, Message, User);
+    {
+        var stateTargetFactory = Context.Services
+            .GetRequiredService<IStateTargetFactory<TMessage, TUser, TStateTarget>>();
+        var stateTarget = stateTargetFactory.GetStateTarget(Context.Message, Context.User);
+
+        await SetState(state, stateTarget);
+    }
+
+    protected async Task SetState(IState state, TStateTarget stateTarget)
+    {
+        var stateWriter = Context.Services
+            .GetRequiredService<IStateWriter<TStateTarget>>();
+
+        Context.UserState = await stateWriter.WriteState(state, stateTarget);
     }
 }
