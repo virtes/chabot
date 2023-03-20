@@ -24,6 +24,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --configuration Release
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --configuration Release
     - name: Codecov
       uses: codecov/codecov-action@v2.0.1
