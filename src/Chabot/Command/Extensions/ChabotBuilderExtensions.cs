@@ -40,6 +40,7 @@ public static partial class ChabotBuilderExtensions
         chabotBuilder.Services.TryAddSingleton<ICommandMessageActionBuilder<TMessage, TUser>,
             CommandMessageActionBuilder<TMessage, TUser>>();
         chabotBuilder.Services.TryAddSingleton<ICommandDescriptorSelector, CommandDescriptorSelector>();
+        chabotBuilder.Services.TryAddSingleton<ICommandDescriptorParser, CommandDescriptorParser>();
         chabotBuilder.Services.TryAddSingleton<ICommandDescriptorsProvider, CommandDescriptorsProvider>();
 
         chabotBuilder.Services.AddSingleton<CommandActionInvokerMiddleware<TMessage, TUser>>();
