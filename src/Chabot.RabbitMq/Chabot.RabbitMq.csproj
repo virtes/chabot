@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>10</LangVersion>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Chabot" Version="2.0.0"/>
+        <PackageReference Include="EasyNetQ" Version="7.8.0"/>
+        <PackageReference Include="EasyNetQ.DI.Microsoft" Version="7.8.0"/>
+        <PackageReference Include="EasyNetQ.Logging.Serilog" Version="7.8.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
+    </ItemGroup>
+
+</Project>

@@ -3,9 +3,9 @@ using System.Text;
 using EasyNetQ.Consumer;
 using Microsoft.Extensions.Logging;
 
-namespace Chabot.Proxy.RabbitMq.Implementation;
+namespace Chabot.RabbitMq.Proxy;
 
-public class TraceContextExtractorHandlerRunner : IHandlerRunner
+internal class TraceContextExtractorHandlerRunner : IHandlerRunner
 {
     private readonly ILogger<TraceContextExtractorHandlerRunner> _logger;
     private readonly IConsumerErrorStrategy _consumerErrorStrategy;
@@ -63,7 +63,7 @@ public class TraceContextExtractorHandlerRunner : IHandlerRunner
         catch (Exception e)
         {
             _logger.LogError(e, "Consumer error strategy has failed");
-            activity.SetException(e);
+            activity.SetStatus(ActivityStatusCode.Error, e.Message);
             return AckStrategies.NackWithRequeue;
         }
     }

@@ -2,9 +2,9 @@ using System.Diagnostics;
 using EasyNetQ;
 using EasyNetQ.Internals;
 
-namespace Chabot.Proxy.RabbitMq.Implementation;
+namespace Chabot.RabbitMq.Proxy;
 
-public class SendReceiveTraceContextWrapper : ISendReceive
+internal class SendReceiveTraceContextWrapper : ISendReceive
 {
     private readonly DefaultSendReceive _defaultSendReceive;
 

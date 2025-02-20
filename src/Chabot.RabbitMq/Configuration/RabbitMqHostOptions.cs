@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Chabot.Proxy.RabbitMq.Configuration;
+namespace Chabot.RabbitMq.Configuration;
 
 public class RabbitMqHostOptions
 {

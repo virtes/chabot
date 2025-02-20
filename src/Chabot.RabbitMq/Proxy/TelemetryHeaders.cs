@@ -1,6 +1,6 @@
-namespace Chabot.Proxy.RabbitMq.Implementation;
+namespace Chabot.RabbitMq.Proxy;
 
-public static class TelemetryHeaders
+internal static class TelemetryHeaders
 {
     public const string ParentId = "chabot-parent-id";
 

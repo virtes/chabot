@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Chabot.Proxy.RabbitMq.Configuration;
+namespace Chabot.RabbitMq.Configuration;
 
 public class RabbitMqProxyOptions : IValidatableObject
 {
@@ -8,7 +8,7 @@ public class RabbitMqProxyOptions : IValidatableObject
     public List<RabbitMqHostOptions> Hosts { get; set; } = default!;
 
     [Required(AllowEmptyStrings = false)]
-    public string QueueName { get; set; } = default!;
+    public string Queue { get; set; } = default!;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
