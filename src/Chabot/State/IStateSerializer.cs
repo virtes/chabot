@@ -2,7 +2,7 @@ namespace Chabot.State;
 
 public interface IStateSerializer<TSerializedState>
 {
-    TSerializedState SerializeState(UserState userState);
+   TSerializedState Serialize(object value);
 
-    UserState DeserializeState(TSerializedState serializedStateData);
+   object Deserialize(TSerializedState serializedState, Type type);
 }
