@@ -30,7 +30,7 @@ services.AddTelegramChabot((c, _) => c.Token = <BOT_TOKEN>, c =>
     c.UseCommands();
 });
 ```
-Define a commands:
+Define a command:
 ```csharp
 public class HelloWorldCommandGroup : TelegramCommandGroup
 {

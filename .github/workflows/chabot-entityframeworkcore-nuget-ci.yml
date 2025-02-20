@@ -1,4 +1,4 @@
-name: Chabot.InMemoryState Nuget CI
+name: Chabot.EntityFrameworkCore Nuget CI
 
 on:
   push:
