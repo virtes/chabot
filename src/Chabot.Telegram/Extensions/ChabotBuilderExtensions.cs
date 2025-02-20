@@ -1,19 +1,41 @@
-using Chabot.Configuration;
-using Chabot.Telegram.Implementation;
 using Microsoft.Extensions.DependencyInjection;
-using TelegramUpdate = Telegram.Bot.Types.Update;
-using TelegramUser = Telegram.Bot.Types.User;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 // ReSharper disable once CheckNamespace
 namespace Chabot.Telegram;
 
 public static class ChabotBuilderExtensions
 {
-    public static ChabotBuilder<TelegramUpdate, TelegramUser, TelegramStateTarget> UseTelegramPollingUpdates(
-        this ChabotBuilder<TelegramUpdate, TelegramUser, TelegramStateTarget> chabotBuilder)
+    public static IChabotBuilder<Update> AddTelegramLongPollingListener(this IChabotBuilder<Update> builder)
     {
-        chabotBuilder.Services.AddHostedService<TelegramListenerHostedService>();
+        builder.Services.AddHostedService<TelegramLongPollingListenerHostedService>();
 
-        return chabotBuilder;
+        return builder;
+    }
+
+    public static IChabotBuilder<Update> AddTelegramBotClient(this IChabotBuilder<Update> builder,
+        Func<IServiceProvider, ITelegramBotClient> telegramBotClientFactory)
+    {
+        builder.Services.TryAddSingleton<ITelegramBotClientProvider>(
+            sp => new TelegramBotClientProvider(telegramBotClientFactory(sp)));
+
+        return builder;
+    }
+
+    public static IChabotBuilder<Update> AddTelegramBotClient(this IChabotBuilder<Update> builder,
+        Action<TelegramBotClientOptions> configureOptions)
+    {
+        builder.Services.BindOptions(configureOptions);
+
+        builder.Services.TryAddSingleton<ITelegramBotClientProvider>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<TelegramBotClientOptions>>().Value;
+            return new TelegramBotClientProvider(new TelegramBotClient(options.Token!));
+        });
+
+        return builder;
     }
 }

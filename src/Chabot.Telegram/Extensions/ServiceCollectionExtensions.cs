@@ -1,14 +1,11 @@
-using Chabot.Command;
-using Chabot.Configuration;
-using Chabot.Message;
+using Chabot.Commands;
+using Chabot.Proxy;
 using Chabot.State;
-using Chabot.Telegram.Configuration;
-using Chabot.Telegram.Implementation;
-using Chabot.User;
+using Chabot.Telegram.Commands;
+using Chabot.Telegram.Proxy;
+using Chabot.Telegram.State;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using TelegramUpdate = Telegram.Bot.Types.Update;
-using TelegramUser = Telegram.Bot.Types.User;
+using Telegram.Bot.Types;
 
 // ReSharper disable once CheckNamespace
 namespace Chabot.Telegram;
@@ -16,26 +13,25 @@ namespace Chabot.Telegram;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTelegramChabot(this IServiceCollection services,
-        Action<TelegramBotOptions, IServiceProvider> configureBotOptions,
-        Action<ChabotBuilder<TelegramUpdate, TelegramUser, TelegramStateTarget>> builderAction)
+        Action<IChabotBuilder<Update>> configureBuilder)
     {
-        services
-            .AddOptions<TelegramBotOptions>()
-            // ReSharper disable once RedundantTypeArgumentsOfMethod
-            .Configure<IServiceProvider>(configureBotOptions)
-            .Validate(o => !string.IsNullOrEmpty(o.Token), "Bot Token must be specified");
-        
-        services.TryAddSingleton<ITelegramBotClientProvider, TelegramBotClientProvider>();
-        services.TryAddSingleton<IActionSelectionMetadataFactory<TelegramUpdate, TelegramUser>,
-            TelegramActionSelectionMetadataFactory>();
-        services.TryAddSingleton<IMessageTextResolver<TelegramUpdate>, TelegramMessageTextResolver>();
-        services.TryAddSingleton<IUserIdResolver<TelegramUpdate, TelegramUser>, TelegramUserIdResolver>();
-        services.TryAddSingleton<IStateTargetFactory<TelegramUpdate, TelegramUser, TelegramStateTarget>,
-            TelegramStateTargetFactory>();
+        services.AddSingleton<IUpdatePartitioner<Update>, TelegramUpdatePartitioner>();
+        services.AddSingleton<IUpdateMetadataParser<Update>, TelegramUpdateMetadataParser>();
 
-        // ReSharper disable once RedundantTypeArgumentsOfMethod
-        services.AddChabot<TelegramUpdate, TelegramUser, TelegramStateTarget>(builderAction);
+        services.AddSingleton<IStateTargetResolverFactory<Update>, StateTargetResolverFactory>();
+        services.AddSingleton<ChatStateTargetResolver>();
+        services.AddSingleton<ChatMessageStateTargetResolver>();
+
+        services.AddSingleton<IRestrictionsFactory, AllowedUpdateTypeRestrictionsFactory>();
+        services.AddSingleton<ICommandRestrictionHandler<Update, AllowedUpdateTypeRestriction>, AllowedUpdateTypeRestrictionsHandler>();
+
+        services.AddSingleton<IRestrictionsFactory, AllowedCallbackQueryPayloadRestrictionsFactory>();
+        services.AddSingleton<ICommandRestrictionHandler<Update, AllowedCallbackQueryPayloadRestriction>, AllowedCallbackQueryPayloadRestrictionHandler>();
+
+        services.AddSingleton<ICommandParameterValueResolverFactory<Update>, FromChatIdParameterValueResolverFactory>();
+
+        services.AddChabot(configureBuilder);
 
         return services;
-    } 
+    }
 }

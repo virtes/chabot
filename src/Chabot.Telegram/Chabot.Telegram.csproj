@@ -1,18 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>Enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <LangVersion>10</LangVersion>
+        <IsPackable>true</IsPackable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Chabot" Version="1.1.0" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-      <PackageReference Include="Telegram.Bot" Version="18.0.0" />
-      <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2" />
+        <PackageReference Include="Chabot" Version="2.0.0"/>
+        <PackageReference Include="Telegram.Bot" Version="18.0.0"/>
+        <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2"/>
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Chabot.Telegram.Configuration;
+// ReSharper disable once CheckNamespace
+namespace Chabot.Telegram;
 
-public class TelegramBotOptions
+public class TelegramBotClientOptions
 {
     [Required(AllowEmptyStrings = false)]
-    public string Token { get; set; } = default!;
+    public string? Token { get; set; } = default!;
 }
