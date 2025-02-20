@@ -23,4 +23,17 @@ public class TelegramCommands : CommandsBase<Update>
             };
         }
     }
+
+    protected int MessageId
+    {
+        get
+        {
+            return Context.Update.Type switch
+            {
+                UpdateType.Message => Context.Update.Message!.MessageId,
+                UpdateType.CallbackQuery => Context.Update.CallbackQuery!.Message!.MessageId,
+                _ => throw new InvalidOperationException("Could not resolve message id")
+            };
+        }
+    }
 }

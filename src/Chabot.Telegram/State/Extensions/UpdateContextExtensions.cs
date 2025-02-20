@@ -33,4 +33,18 @@ public static class UpdateContextExtensions
 
         await updateContext.SetState(new ChatMessageStateTarget(chatId, messageId), state);
     }
+
+    [PublicAPI]
+    public static async ValueTask SetChatMessageState(this UpdateContext<Update> updateContext,
+        long chatId, int messageId, object? state)
+    {
+        await updateContext.SetState(new ChatMessageStateTarget(chatId, messageId), state);
+    }
+
+    [PublicAPI]
+    public static async ValueTask SetChatMessageState(this UpdateContext<Update> updateContext,
+        Message message, object? state)
+    {
+        await updateContext.SetChatMessageState(message.Chat.Id, message.MessageId, state);
+    }
 }
