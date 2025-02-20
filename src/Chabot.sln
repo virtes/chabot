@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Telegram", "Chabot.Sample.Telegram\Chabot.Sample.Telegram.csproj", "{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.RabbitMq", "Chabot.RabbitMq\Chabot.RabbitMq.csproj", "{CFF213F8-B9F5-4111-8601-36455BF3E801}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Proxy.RabbitMq", "Chabot.Proxy.RabbitMq\Chabot.Proxy.RabbitMq.csproj", "{CFF213F8-B9F5-4111-8601-36455BF3E801}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Proxy.Sender", "Chabot.Sample.Proxy.Sender\Chabot.Sample.Proxy.Sender.csproj", "{13BF9C96-B7A6-449D-893B-327909A51228}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Proxy.Listener", "Chabot.Sample.Proxy.Listener\Chabot.Sample.Proxy.Listener.csproj", "{13BF9C96-B7A6-449D-893B-327909A51228}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Proxy.Worker", "Chabot.Sample.Proxy.Worker\Chabot.Sample.Proxy.Worker.csproj", "{A395B6F2-E264-45C0-A48B-561BA26B1E96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.Sample.Proxy.Receiver", "Chabot.Sample.Proxy.Receiver\Chabot.Sample.Proxy.Receiver.csproj", "{A395B6F2-E264-45C0-A48B-561BA26B1E96}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chabot.EntityFrameworkCore", "Chabot.EntityFrameworkCore\Chabot.EntityFrameworkCore.csproj", "{F35B724F-C789-4AD2-8CB0-09555AC3FEE8}"
 EndProject
@@ -47,10 +45,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CFF213F8-B9F5-4111-8601-36455BF3E801}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CFF213F8-B9F5-4111-8601-36455BF3E801}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFF213F8-B9F5-4111-8601-36455BF3E801}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -113,7 +107,6 @@ Global
 		{39D11B33-DFA4-44C4-B8AB-1E40508C3241} = {36377D10-CCFF-46E8-8F3C-B3E990B258C3}
 		{62666139-B2D8-4E4C-A399-60C70700C600} = {36377D10-CCFF-46E8-8F3C-B3E990B258C3}
 		{13BF9C96-B7A6-449D-893B-327909A51228} = {7E83933F-1126-4EA2-B16C-81C467E3F02E}
-		{C7943441-BFA9-43D9-A7FC-9A81D0C9C62C} = {7E83933F-1126-4EA2-B16C-81C467E3F02E}
 		{A395B6F2-E264-45C0-A48B-561BA26B1E96} = {7E83933F-1126-4EA2-B16C-81C467E3F02E}
 	EndGlobalSection
 EndGlobal

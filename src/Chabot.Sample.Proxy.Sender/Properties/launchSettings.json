@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "Chabot.Sample.Proxy.Listener": {
+    "Chabot.Sample.Proxy.Sender": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Chabot" Version="2.0.0"/>
+        <PackageReference Include="Chabot.MemoryCache" Version="2.0.1"/>
+        <PackageReference Include="Chabot.NewtonsoftJson" Version="2.0.1"/>
+        <PackageReference Include="Chabot.RabbitMq" Version="2.0.0"/>
+        <PackageReference Include="Chabot.Telegram" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
+        <PackageReference Include="Serilog" Version="2.12.0"/>
+        <PackageReference Include="Serilog.Enrichers.Span" Version="2.3.0"/>
+        <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1"/>
+        <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0"/>
+    </ItemGroup>
+
+</Project>
