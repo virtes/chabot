@@ -3,7 +3,7 @@ name: Chabot.InMemoryState Nuget CI
 on:
   push:
     tags:
-      - 'chabot-inmemorystate-v*'
+      - 'chabot-newtonsoftjson-v*'
 
 jobs:
   call-workflow-passing-data:
@@ -11,7 +11,7 @@ jobs:
       contents: read
     uses: virtes/chabot/.github/workflows/nuget-ci-template.yml@master
     with:
-      project-name: Chabot.InMemoryState
-      tag-prefix: chabot-inmemorystate-v
+      project-name: Chabot.NewtonsoftJson
+      tag-prefix: chabot-newtonsoftjson-v
     secrets:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}

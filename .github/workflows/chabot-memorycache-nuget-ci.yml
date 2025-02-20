@@ -1,0 +1,17 @@
+name: Chabot.InMemoryState Nuget CI
+
+on:
+  push:
+    tags:
+      - 'chabot-memorycache-v*'
+
+jobs:
+  call-workflow-passing-data:
+    permissions:
+      contents: read
+    uses: virtes/chabot/.github/workflows/nuget-ci-template.yml@master
+    with:
+      project-name: Chabot.MemoryCache
+      tag-prefix: chabot-memorycache-v
+    secrets:
+      nuget-api-key: ${{ secrets.NUGET_API_KEY }}
