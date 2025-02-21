@@ -10,7 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Chabot" Version="2.0.0"/>
-        <PackageReference Include="Telegram.Bot" Version="18.0.0"/>
+        <PackageReference Include="Telegram.Bot" Version="22.4.3" />
         <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2"/>
     </ItemGroup>
 
