@@ -36,4 +36,17 @@ public class TelegramCommands : CommandsBase<Update>
             };
         }
     }
+
+    protected long UserId
+    {
+        get
+        {
+            return Context.Update.Type switch
+            {
+                UpdateType.Message => Context.Update.Message!.From!.Id,
+                UpdateType.CallbackQuery => Context.Update.CallbackQuery!.From.Id,
+                _ => throw new InvalidOperationException("Could not resolve user id")
+            };
+        }
+    }
 }
