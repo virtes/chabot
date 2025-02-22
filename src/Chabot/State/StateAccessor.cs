@@ -60,7 +60,7 @@ internal class StateAccessor<TSerializedState> : IStateAccessor
         {
             _logger.LogWarning(e, "Could not deserialize state ({StateId}, {StateTypeName})",
                 serializedState.Id, stateType.FullName);
-            throw;
+            return null;
         }
 
         _logger.LogTrace("State retrieved ({StateId}, {Key}, {TargetType}, {@State})",
