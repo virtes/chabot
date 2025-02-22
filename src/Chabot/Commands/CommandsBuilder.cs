@@ -22,6 +22,10 @@ public class CommandsBuilder<TUpdate>
     {
         ChabotBuilder.Services.AddScoped<IRestrictionsFactory, UpdatePropertiesRestrictionsFactory>();
         ChabotBuilder.Services.TryAddSingleton<ICommandRestrictionHandler<TUpdate, UpdatePropertiesRestriction>, UpdatePropertiesCommandRestrictionHandler<TUpdate>>();
+
+        ChabotBuilder.Services.AddScoped<IRestrictionsFactory, AllowedMessageTextRegexRestrictionsFactory>();
+        ChabotBuilder.Services.TryAddSingleton<ICommandRestrictionHandler<TUpdate, AllowedMessageTextRegexRestriction>, AllowedMessageTextRegexRestrictionHandler<TUpdate>>();
+
         ChabotBuilder.Services.AddScoped<ICommandResolver<TUpdate>, CommandResolver<TUpdate>>();
         ChabotBuilder.Services.AddSingleton<CommandResolver<TUpdate>.RestrictionHandlersCache>();
         ChabotBuilder.Services.AddScoped<ICommandsProvider, CommandsProvider<TUpdate>>();
