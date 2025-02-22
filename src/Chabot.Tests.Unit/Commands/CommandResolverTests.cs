@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentAssertions;
 using Chabot.Commands;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -18,7 +19,8 @@ public class CommandResolverTests
     {
         _subject = new CommandResolver<string>(
             serviceProvider: _serviceProviderMock.Object,
-            restrictionHandlersCache: _cache);
+            restrictionHandlersCache: _cache,
+            logger: NullLogger<CommandResolver<string>>.Instance);
     }
 
     [Fact]
