@@ -49,4 +49,16 @@ public class TelegramCommands : CommandsBase<Update>
             };
         }
     }
+
+    protected string? CallbackQueryPayload
+    {
+        get
+        {
+            return Context.Update.Type switch
+            {
+                UpdateType.CallbackQuery => Context.Update.CallbackQuery!.Data,
+                _ => throw new InvalidOperationException("Could not resolve callback query payload")
+            };
+        }
+    }
 }
