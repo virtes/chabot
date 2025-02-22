@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Chabot.Commands;
 
@@ -7,12 +8,15 @@ internal class CommandResolver<TUpdate> : ICommandResolver<TUpdate>
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly RestrictionHandlersCache _restrictionHandlersCache;
+    private readonly ILogger<CommandResolver<TUpdate>> _logger;
 
     public CommandResolver(IServiceProvider serviceProvider,
-        RestrictionHandlersCache restrictionHandlersCache)
+        RestrictionHandlersCache restrictionHandlersCache,
+        ILogger<CommandResolver<TUpdate>> logger)
     {
         _serviceProvider = serviceProvider;
         _restrictionHandlersCache = restrictionHandlersCache;
+        _logger = logger;
     }
 
     public async Task<CommandMetadata> ResolveCommand(UpdateMetadata updateMetadata,
@@ -35,12 +39,17 @@ internal class CommandResolver<TUpdate> : ICommandResolver<TUpdate>
             throw new InvalidOperationException("No suitable command found");
 
         var maxOrderCommand = allowedCommands.MaxBy(c => c.Order)!;
-        var anotherCommand = allowedCommands
-            .FirstOrDefault(c => c.Order == maxOrderCommand.Order
+        var anotherCommands = allowedCommands
+            .Where(c => c.Order == maxOrderCommand.Order
                                  && c.Id != maxOrderCommand.Id);
 
-        if (anotherCommand is not null)
+        if (anotherCommands.Any())
+        {
+            // ReSharper disable once CoVariantArrayConversion
+            _logger.LogWarning("Ambiguous command configuration ({@CommandIds})",
+                allowedCommands.Select(c => c.Id).ToArray());
             throw new InvalidOperationException("Ambiguous command configuration");
+        }
 
         return maxOrderCommand;
     }
