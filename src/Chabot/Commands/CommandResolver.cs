@@ -39,15 +39,12 @@ internal class CommandResolver<TUpdate> : ICommandResolver<TUpdate>
             throw new InvalidOperationException("No suitable command found");
 
         var maxOrderCommand = allowedCommands.MaxBy(c => c.Order)!;
-        var anotherCommands = allowedCommands
-            .Where(c => c.Order == maxOrderCommand.Order
-                                 && c.Id != maxOrderCommand.Id);
-
-        if (anotherCommands.Any())
+        if (allowedCommands.Any(c => c.Order == maxOrderCommand.Order
+                                     && c.Id != maxOrderCommand.Id))
         {
             // ReSharper disable once CoVariantArrayConversion
             _logger.LogWarning("Ambiguous command configuration ({@CommandIds})",
-                allowedCommands.Select(c => c.Id).ToArray());
+                allowedCommands.Where(c => c.Order == maxOrderCommand.Order).Select(c => c.Id).ToArray());
             throw new InvalidOperationException("Ambiguous command configuration");
         }
 
