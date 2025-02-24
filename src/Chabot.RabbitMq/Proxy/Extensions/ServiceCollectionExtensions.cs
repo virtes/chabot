@@ -23,7 +23,9 @@ public static class ServiceCollectionExtensions
                         Host = h.Host,
                         Port = h.Port
                     })
-                    .ToList()
+                    .ToList(),
+                UserName = options.Username,
+                Password = options.Password
             };
         }, sr => sr.EnableSerilogLogging());
     }

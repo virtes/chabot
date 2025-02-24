@@ -10,6 +10,10 @@ public class RabbitMqProxyOptions : IValidatableObject
     [Required(AllowEmptyStrings = false)]
     public string Queue { get; set; } = default!;
 
+    public string? Username { get; set; }
+
+    public string? Password { get; set; }
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (!Hosts.Any())
