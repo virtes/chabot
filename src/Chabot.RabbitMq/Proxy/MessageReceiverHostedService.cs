@@ -33,7 +33,10 @@ internal class MessageReceiverHostedService : IHostedService
                 var receiver = scope.ServiceProvider.GetRequiredService<IUpdateProxyReceiver<byte[]>>();
 
                 await receiver.UpdateReceived(m);
-            });
+            },
+            c => c
+                .WithPrefetchCount(_options.PrefetchCount)
+                .WithSingleActiveConsumer(_options.SingleActiveConsumer));
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

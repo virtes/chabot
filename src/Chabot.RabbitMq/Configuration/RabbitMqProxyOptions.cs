@@ -14,6 +14,10 @@ public class RabbitMqProxyOptions : IValidatableObject
 
     public string? Password { get; set; }
 
+    public ushort PrefetchCount { get; set; } = 100;
+
+    public bool SingleActiveConsumer { get; set; } = false;
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (!Hosts.Any())
