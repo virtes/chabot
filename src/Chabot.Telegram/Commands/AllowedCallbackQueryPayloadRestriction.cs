@@ -1,3 +1,5 @@
 namespace Chabot.Telegram.Commands;
 
-internal record AllowedCallbackQueryPayloadRestriction(string[] AllowedPayloads);
+internal record AllowedCallbackQueryPayloadRestriction(
+    string[] AllowedPayloads,
+    bool UseQueryParameters);

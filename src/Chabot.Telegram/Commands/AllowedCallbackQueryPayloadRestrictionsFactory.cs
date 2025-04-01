@@ -11,6 +11,6 @@ internal class AllowedCallbackQueryPayloadRestrictionsFactory : IRestrictionsFac
         if (attribute is null)
             return Array.Empty<object>();
 
-        return [ new AllowedCallbackQueryPayloadRestriction(attribute.AllowedPayloads) ];
+        return [ new AllowedCallbackQueryPayloadRestriction(attribute.AllowedPayloads, attribute.UseQueryParameters) ];
     }
 }

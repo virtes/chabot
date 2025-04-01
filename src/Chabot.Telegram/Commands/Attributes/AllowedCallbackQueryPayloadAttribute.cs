@@ -9,6 +9,8 @@ public class AllowedCallbackQueryPayloadAttribute : Attribute
 {
     public string[] AllowedPayloads { get; }
 
+    public bool UseQueryParameters { get; set; } = false;
+
     public AllowedCallbackQueryPayloadAttribute(params string[] allowedPayloads)
     {
         AllowedPayloads = allowedPayloads;

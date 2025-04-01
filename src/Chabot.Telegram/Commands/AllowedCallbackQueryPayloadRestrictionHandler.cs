@@ -13,6 +13,10 @@ internal class AllowedCallbackQueryPayloadRestrictionHandler
         if (update.Type != UpdateType.CallbackQuery)
             return ValueTask.FromResult(false);
 
-        return ValueTask.FromResult(restriction.AllowedPayloads.Contains(update.CallbackQuery!.Data));
+        var payload = restriction.UseQueryParameters
+            ? update.CallbackQuery!.Data!.Split('?', StringSplitOptions.RemoveEmptyEntries).First()
+            : update.CallbackQuery!.Data;
+
+        return ValueTask.FromResult(restriction.AllowedPayloads.Contains(payload));
     }
 }

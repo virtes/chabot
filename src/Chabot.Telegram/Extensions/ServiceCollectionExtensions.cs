@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICommandRestrictionHandler<Update, AllowedCallbackQueryPayloadRestriction>, AllowedCallbackQueryPayloadRestrictionHandler>();
 
         services.AddSingleton<ICommandParameterValueResolverFactory<Update>, FromChatIdParameterValueResolverFactory>();
+        services.AddSingleton<ICommandParameterValueResolverFactory<Update>, FromQueryParameterParameterValueResolverFactory>();
 
         services.AddChabot(configureBuilder);
 
