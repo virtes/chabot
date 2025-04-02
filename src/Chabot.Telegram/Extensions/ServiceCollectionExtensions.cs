@@ -28,6 +28,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IRestrictionsFactory, AllowedCallbackQueryPayloadRestrictionsFactory>();
         services.AddSingleton<ICommandRestrictionHandler<Update, AllowedCallbackQueryPayloadRestriction>, AllowedCallbackQueryPayloadRestrictionHandler>();
 
+        services.AddSingleton<IRestrictionsFactory, AllowedMessageTypeRestrictionsFactory>();
+        services.AddSingleton<ICommandRestrictionHandler<Update, AllowedMessageTypeRestriction>, AllowedMessageTypeRestrictionHandler>();
+
         services.AddSingleton<ICommandParameterValueResolverFactory<Update>, FromChatIdParameterValueResolverFactory>();
         services.AddSingleton<ICommandParameterValueResolverFactory<Update>, FromQueryParameterParameterValueResolverFactory>();
 

@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 
+// ReSharper disable once CheckNamespace
 namespace Chabot.Telegram.Commands;
 
 [PublicAPI]
