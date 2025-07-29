@@ -59,7 +59,15 @@ internal class TelegramLongPollingListenerHostedService : IHostedService
     private Task ErrorHandler(ITelegramBotClient telegramBotClient,
         Exception exception, CancellationToken cancellationToken)
     {
-        _logger.LogError(exception, "Telegram unhandled exception");
+        if (exception is global::Telegram.Bot.Exceptions.ApiRequestException apiRequestException)
+        {
+            _logger.LogError(apiRequestException, "Telegram listener api request exception {ErrorCode}",
+                apiRequestException.ErrorCode);
+        }
+        else
+        {
+            _logger.LogError(exception, "Telegram listener exception");
+        }
 
         return Task.CompletedTask;
     }
