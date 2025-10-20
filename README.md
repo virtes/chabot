@@ -34,6 +34,16 @@ public class StartCommands : TelegramCommands
         [FromChatId]long chatId)
     {
         await BotClient.SendTextMessageAsync(chatId, "Hello");
+
+        await Context.SetCurrentChatState(new MenuState());
+    }
+
+    [AllowedMessageText("/test")]
+    [AllowedChatState<MenuState>]
+    public async Task Test()
+    {
+        await BotClient.SendTextMessageAsync(ChatId, "Test action",
+            replyToMessageId: MessageId);
     }
 }
 ```
