@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -19,7 +20,7 @@ public static class ChabotBuilderExtensions
     public static IChabotBuilder<Update> AddTelegramBotClient(this IChabotBuilder<Update> builder,
         Func<IServiceProvider, ITelegramBotClient> telegramBotClientFactory)
     {
-        builder.Services.TryAddSingleton<ITelegramBotClientProvider>(
+        builder.Services.TryAddTransient<ITelegramBotClientProvider>(
             sp => new TelegramBotClientProvider(telegramBotClientFactory(sp)));
 
         return builder;
@@ -30,10 +31,35 @@ public static class ChabotBuilderExtensions
     {
         builder.Services.BindOptions(configureOptions);
 
-        builder.Services.TryAddSingleton<ITelegramBotClientProvider>(sp =>
+        builder.Services.AddHttpClient("telegram-bot-client")
+            .ConfigurePrimaryHttpMessageHandler(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<TelegramBotClientOptions>>().Value;
+
+                if (options.Proxy is null)
+                    return new HttpClientHandler();
+
+                var proxy = new WebProxy(options.Proxy.Address)
+                {
+                    Credentials = new NetworkCredential(options.Proxy.Username, options.Proxy.Password)
+                };
+
+                return new SocketsHttpHandler
+                {
+                    Proxy = proxy,
+                    UseProxy = true
+                };
+            });
+
+        builder.Services.TryAddTransient<ITelegramBotClientProvider>(sp =>
         {
             var options = sp.GetRequiredService<IOptions<TelegramBotClientOptions>>().Value;
-            return new TelegramBotClientProvider(new TelegramBotClient(options.Token!));
+            var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("telegram-bot-client");
+
+            var telegramBotClient = new TelegramBotClient(
+                new global::Telegram.Bot.TelegramBotClientOptions(options.Token), httpClient);
+
+            return new TelegramBotClientProvider(telegramBotClient);
         });
 
         return builder;
